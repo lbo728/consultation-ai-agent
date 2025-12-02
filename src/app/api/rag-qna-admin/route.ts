@@ -71,12 +71,11 @@ export async function POST(request: NextRequest) {
     });
 
     const result = await model.generateContent({
-      contents: [
-        {
-          role: 'user',
-          parts: [{ text: query }],
-        },
-      ],
+      contents: query,
+      generationConfig: {
+        temperature: 0.7,
+        maxOutputTokens: 1000,
+      },
       tools: [
         {
           fileSearch: {
