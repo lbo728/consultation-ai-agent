@@ -7,10 +7,20 @@ export interface KnowledgeFile {
   content: string;
   size: number;
   uploadedAt: Date;
+  // Gemini File Search 관련 정보
+  geminiFileSearchStoreName?: string;
+  geminiDocumentName?: string;
 }
 
-// 인메모리 지식 저장소
+export interface UserFileSearchStore {
+  userId: string;
+  storeName: string;
+  createdAt: Date;
+}
+
+// 인메모리 저장소
 const knowledgeFiles: Map<string, KnowledgeFile> = new Map();
+const userStores: Map<string, UserFileSearchStore> = new Map();
 
 export function createKnowledgeFile(
   userId: string,
@@ -53,4 +63,31 @@ export function getKnowledgeFileSafeData(file: KnowledgeFile) {
     size: file.size,
     uploadedAt: file.uploadedAt,
   };
+}
+
+// File Search Store 관리
+export function createUserFileSearchStore(userId: string, storeName: string): UserFileSearchStore {
+  const store: UserFileSearchStore = {
+    userId,
+    storeName,
+    createdAt: new Date(),
+  };
+  userStores.set(userId, store);
+  return store;
+}
+
+export function getUserFileSearchStore(userId: string): UserFileSearchStore | undefined {
+  return userStores.get(userId);
+}
+
+export function updateKnowledgeFileGeminiInfo(
+  fileId: string,
+  geminiFileSearchStoreName: string,
+  geminiDocumentName: string
+): void {
+  const file = knowledgeFiles.get(fileId);
+  if (file) {
+    file.geminiFileSearchStoreName = geminiFileSearchStoreName;
+    file.geminiDocumentName = geminiDocumentName;
+  }
 }
