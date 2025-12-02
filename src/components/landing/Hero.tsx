@@ -93,7 +93,7 @@ export default function Hero() {
               👉 7일 무료로 시작하기
             </a>
             <a
-              href="#demo"
+              href="/test"
               className="inline-flex items-center justify-center px-8 py-4 bg-white text-gray-700 font-semibold rounded-xl border-2 border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-colors"
             >
               👉 문의 붙여넣고 데모 보기

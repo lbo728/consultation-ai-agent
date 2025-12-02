@@ -40,7 +40,7 @@ export default function CTA() {
             <ArrowRight className="w-5 h-5" />
           </a>
           <a
-            href="#demo"
+            href="/test"
             className="inline-flex items-center justify-center px-8 py-4 bg-transparent text-white font-semibold rounded-xl border-2 border-white/30 hover:bg-white/10 transition-colors"
           >
             데모 바로 해보기

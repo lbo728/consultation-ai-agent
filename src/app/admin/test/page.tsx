@@ -1,24 +1,51 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-export default function TestPage() {
-  const [knowledgeFile, setKnowledgeFile] = useState<File | null>(null);
+interface KnowledgeFile {
+  id: string;
+  name: string;
+  size: number;
+  uploadedAt: string;
+}
+
+export default function AdminTestPage() {
+  const [knowledgeFiles, setKnowledgeFiles] = useState<KnowledgeFile[]>([]);
+  const [selectedKnowledge, setSelectedKnowledge] = useState('');
   const [query, setQuery] = useState('');
   const [answer, setAnswer] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setKnowledgeFile(e.target.files[0]);
+  useEffect(() => {
+    loadKnowledgeFiles();
+  }, []);
+
+  const loadKnowledgeFiles = async () => {
+    try {
+      const response = await fetch('/api/knowledge/list');
+      if (response.ok) {
+        const data = await response.json();
+        setKnowledgeFiles(data.files);
+        // 첫 번째 파일을 기본 선택
+        if (data.files.length > 0) {
+          setSelectedKnowledge(data.files[0].id);
+        }
+      }
+    } catch (error) {
+      console.error('Failed to load knowledge files:', error);
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!knowledgeFile || !query) {
-      alert('사전 지식 파일과 문의 내용을 모두 입력해주세요.');
+    if (!selectedKnowledge) {
+      alert('사전 지식을 선택해주세요. 먼저 브랜드 지식 페이지에서 문서를 업로드해주세요.');
+      return;
+    }
+
+    if (!query) {
+      alert('문의 내용을 입력해주세요.');
       return;
     }
 
@@ -26,13 +53,13 @@ export default function TestPage() {
     setAnswer('');
 
     try {
-      const formData = new FormData();
-      formData.append('file', knowledgeFile);
-      formData.append('query', query);
-
-      const response = await fetch('/api/rag-qna', {
+      const response = await fetch('/api/rag-qna-admin', {
         method: 'POST',
-        body: formData,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          knowledgeId: selectedKnowledge,
+          query,
+        }),
       });
 
       const data = await response.json();
@@ -53,32 +80,40 @@ export default function TestPage() {
   return (
     <div className="max-w-4xl mx-auto">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">RAG 기반 QnA 테스트</h1>
-        <p className="text-gray-600">사전 지식을 업로드하고 고객 문의에 대한 AI 답변을 테스트하세요</p>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">AI 답변 테스트</h1>
+        <p className="text-gray-600">업로드한 브랜드 지식을 기반으로 고객 문의에 대한 AI 답변을 테스트하세요</p>
       </div>
 
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* 파일 업로드 섹션 */}
+          {/* 지식 선택 */}
           <div>
-            <label htmlFor="knowledge-file" className="block text-sm font-medium text-gray-700 mb-2">
-              사전 지식 업로드 (txt, md, pdf)
+            <label htmlFor="knowledge" className="block text-sm font-medium text-gray-700 mb-2">
+              사용할 브랜드 지식
             </label>
-            <input
-              type="file"
-              id="knowledge-file"
-              accept=".txt,.md,.pdf"
-              onChange={handleFileChange}
-              className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 p-2.5"
-            />
-            {knowledgeFile && (
-              <p className="mt-2 text-sm text-gray-600">
-                선택된 파일: {knowledgeFile.name}
-              </p>
+            {knowledgeFiles.length === 0 ? (
+              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                <p className="text-sm text-yellow-800">
+                  업로드된 지식이 없습니다. 먼저 <a href="/admin/knowledge" className="font-medium underline">브랜드 지식 페이지</a>에서 문서를 업로드해주세요.
+                </p>
+              </div>
+            ) : (
+              <select
+                id="knowledge"
+                value={selectedKnowledge}
+                onChange={(e) => setSelectedKnowledge(e.target.value)}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                {knowledgeFiles.map((file) => (
+                  <option key={file.id} value={file.id}>
+                    {file.name}
+                  </option>
+                ))}
+              </select>
             )}
           </div>
 
-          {/* 문의 입력 섹션 */}
+          {/* 문의 입력 */}
           <div>
             <label htmlFor="query" className="block text-sm font-medium text-gray-700 mb-2">
               고객 문의
@@ -96,14 +131,14 @@ export default function TestPage() {
           {/* 제출 버튼 */}
           <button
             type="submit"
-            disabled={isLoading}
+            disabled={isLoading || knowledgeFiles.length === 0}
             className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
           >
             {isLoading ? '답변 생성 중...' : '답변 생성'}
           </button>
         </form>
 
-        {/* 답변 표시 섹션 */}
+        {/* 답변 표시 */}
         {answer && (
           <div className="mt-8">
             <h2 className="text-xl font-semibold text-gray-900 mb-4">AI 답변</h2>
