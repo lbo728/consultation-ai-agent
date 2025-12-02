@@ -17,10 +17,11 @@ const BRAND_TONE_INSTRUCTION = `
 - 마무리는 "추가 문의사항이 있으시면 언제든 문의해 주세요!" 등으로 마무리
 
 답변 시 다음을 참고하세요:
-1. 업로드된 사전 지식(문서)을 기반으로 답변합니다.
+1. 제공된 사전 지식(문서)을 기반으로 답변합니다.
 2. 고객이 궁금해하는 핵심 정보를 명확하게 전달합니다.
 3. 치수, 수량, 가격 등 구체적인 정보를 포함합니다.
 4. 이음선, 레일, 추가요금 등 중요한 사항은 반드시 안내합니다.
+5. 사전 지식에 명시된 정보를 최우선으로 참고하여 답변합니다.
 `;
 
 export async function POST(request: NextRequest) {
@@ -43,97 +44,40 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 1. 파일 업로드
-    console.log('Uploading file to OpenAI...');
-    const uploadedFile = await openai.files.create({
-      file: file,
-      purpose: 'assistants',
-    });
-    console.log('File uploaded:', uploadedFile.id);
+    // 1. 파일 내용 읽기
+    console.log('Reading file content...');
+    const fileContent = await file.text();
+    console.log(`File read successfully: ${file.name} (${fileContent.length} characters)`);
 
-    // 2. Vector Store 생성 및 파일 추가
-    console.log('Creating vector store...');
-    const vectorStore = await openai.beta.vectorStores.create({
-      name: `Knowledge Base - ${Date.now()}`,
-      file_ids: [uploadedFile.id],
-    });
-    console.log('Vector store created:', vectorStore.id);
-
-    // 3. Assistant 생성 (File Search 도구 포함)
-    console.log('Creating assistant...');
-    const assistant = await openai.beta.assistants.create({
-      name: 'Decozio Customer Support',
-      instructions: BRAND_TONE_INSTRUCTION,
+    // 2. Chat Completions API로 답변 생성
+    console.log('Generating response with OpenAI...');
+    const completion = await openai.chat.completions.create({
       model: 'gpt-4o',
-      tools: [{ type: 'file_search' }],
-      tool_resources: {
-        file_search: {
-          vector_store_ids: [vectorStore.id],
+      messages: [
+        {
+          role: 'system',
+          content: BRAND_TONE_INSTRUCTION,
         },
-      },
-    });
-    console.log('Assistant created:', assistant.id);
+        {
+          role: 'user',
+          content: `다음은 우리 브랜드의 사전 지식과 과거 문의 내역입니다. 이 정보를 참고하여 고객 문의에 답변해주세요.
 
-    // 4. Thread 생성 및 메시지 추가
-    console.log('Creating thread...');
-    const thread = await openai.beta.threads.create();
+=== 사전 지식 ===
+${fileContent}
 
-    await openai.beta.threads.messages.create(thread.id, {
-      role: 'user',
-      content: query,
-    });
-    console.log('Thread and message created');
+=== 고객 문의 ===
+${query}
 
-    // 5. Run 실행 및 완료 대기
-    console.log('Running assistant...');
-    const run = await openai.beta.threads.runs.create(thread.id, {
-      assistant_id: assistant.id,
+위 사전 지식을 바탕으로 고객 문의에 대해 브랜드 톤에 맞게 답변해주세요.`,
+        },
+      ],
+      temperature: 0.7,
+      max_tokens: 1000,
     });
 
-    // Run 완료 대기
-    let runStatus = await openai.beta.threads.runs.retrieve(thread.id, run.id);
-    let attempts = 0;
-    const maxAttempts = 30; // 30초 타임아웃
+    const answer = completion.choices[0]?.message?.content || '답변을 생성할 수 없습니다.';
 
-    while (runStatus.status !== 'completed' && attempts < maxAttempts) {
-      if (runStatus.status === 'failed' || runStatus.status === 'cancelled' || runStatus.status === 'expired') {
-        throw new Error(`Run failed with status: ${runStatus.status}`);
-      }
-
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      runStatus = await openai.beta.threads.runs.retrieve(thread.id, run.id);
-      attempts++;
-    }
-
-    if (runStatus.status !== 'completed') {
-      throw new Error('Assistant response timeout');
-    }
-
-    console.log('Run completed');
-
-    // 6. 응답 메시지 가져오기
-    const messages = await openai.beta.threads.messages.list(thread.id);
-    const assistantMessage = messages.data.find((msg) => msg.role === 'assistant');
-
-    if (!assistantMessage || !assistantMessage.content[0]) {
-      throw new Error('No response from assistant');
-    }
-
-    // 7. 정리: Assistant와 Vector Store 삭제
-    console.log('Cleaning up resources...');
-    try {
-      await openai.beta.assistants.del(assistant.id);
-      await openai.beta.vectorStores.del(vectorStore.id);
-      // Note: 파일은 자동으로 정리되지 않으므로 필요시 별도 관리
-    } catch (cleanupError) {
-      console.error('Cleanup error:', cleanupError);
-    }
-
-    // 8. 응답 반환
-    const answer =
-      assistantMessage.content[0].type === 'text'
-        ? assistantMessage.content[0].text.value
-        : '답변을 생성할 수 없습니다.';
+    console.log('Response generated successfully');
 
     return NextResponse.json({ answer });
   } catch (error) {
@@ -141,7 +85,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         error: error instanceof Error ? error.message : '답변 생성 중 오류가 발생했습니다.',
-        details: error instanceof Error ? error.stack : undefined
+        details: error instanceof Error ? error.stack : undefined,
       },
       { status: 500 }
     );
