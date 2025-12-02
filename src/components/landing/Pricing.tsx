@@ -105,7 +105,7 @@ export default function Pricing() {
 
               {/* CTA 버튼 */}
               <a
-                href="#"
+                href="/signup"
                 className={`block w-full py-4 text-center font-semibold rounded-xl transition-colors ${plan.ctaStyle}`}
               >
                 {plan.cta}

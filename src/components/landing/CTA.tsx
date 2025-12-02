@@ -33,7 +33,7 @@ export default function CTA() {
         {/* CTA 버튼 */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <a
-            href="#pricing"
+            href="/signup"
             className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-blue-600 font-bold rounded-xl hover:bg-blue-50 transition-colors shadow-xl shadow-black/20"
           >
             7일 무료 시작하기

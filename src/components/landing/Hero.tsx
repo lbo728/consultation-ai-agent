@@ -87,7 +87,7 @@ export default function Hero() {
           {/* CTA 버튼 */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
             <a
-              href="#pricing"
+              href="/signup"
               className="inline-flex items-center justify-center px-8 py-4 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition-colors shadow-lg shadow-blue-600/30"
             >
               👉 7일 무료로 시작하기
