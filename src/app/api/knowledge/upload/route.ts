@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { GoogleGenerativeAI } from '@google/generative-ai';
-import { GoogleAIFileManager } from '@google/generative-ai/server';
+import { GoogleGenAI } from '@google/genai';
 import { getSession } from '@/lib/session';
 import {
   createKnowledgeFile,
@@ -13,8 +12,9 @@ import { writeFile, unlink } from 'fs/promises';
 import { join } from 'path';
 import { tmpdir } from 'os';
 
-const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY || '');
-const fileManager = new GoogleAIFileManager(process.env.GOOGLE_AI_API_KEY || '');
+const ai = new GoogleGenAI({
+  apiKey: process.env.GOOGLE_AI_API_KEY,
+});
 
 export async function POST(request: NextRequest) {
   let tempFilePath: string | null = null;
@@ -61,74 +61,37 @@ export async function POST(request: NextRequest) {
 
     if (!userStore) {
       console.log('Creating new File Search Store for user:', session.userId);
-      // File Search Store 생성
-      const response = await fetch('https://generativelanguage.googleapis.com/v1beta/fileSearchStores', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Goog-Api-Key': process.env.GOOGLE_AI_API_KEY,
-        },
-        body: JSON.stringify({
-          displayName: `store-${session.userId}`,
-        }),
+      const fileSearchStore = await ai.fileSearchStores.create({
+        config: { displayName: `store-${session.userId}` },
       });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(`Failed to create File Search Store: ${JSON.stringify(errorData)}`);
-      }
-
-      const storeData = await response.json();
-      userStore = createUserFileSearchStore(session.userId, storeData.name);
+      userStore = createUserFileSearchStore(session.userId, fileSearchStore.name);
       console.log('Created File Search Store:', userStore.storeName);
     }
 
-    // 2. Gemini에 파일 업로드
-    console.log('Uploading to Gemini File Manager...');
-    const uploadResult = await fileManager.uploadFile(tempFilePath, {
-      mimeType: file.type || 'text/plain',
-      displayName: file.name,
+    // 2. File Search Store에 파일 직접 업로드
+    console.log('Uploading file to File Search Store...');
+    let operation = await ai.fileSearchStores.uploadToFileSearchStore({
+      file: tempFilePath,
+      fileSearchStoreName: userStore.storeName,
+      config: {
+        displayName: file.name,
+      },
     });
 
-    console.log('File uploaded to Gemini:', uploadResult.file.uri);
-
-    // 3. File Search Store에 문서 추가
-    console.log('Adding document to File Search Store...');
-    const importResponse = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/${userStore.storeName}/documents:import`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Goog-Api-Key': process.env.GOOGLE_AI_API_KEY,
-        },
-        body: JSON.stringify({
-          source: {
-            file: {
-              name: uploadResult.file.name,
-            },
-          },
-        }),
-      }
-    );
-
-    if (!importResponse.ok) {
-      const errorData = await importResponse.json();
-      throw new Error(`Failed to import document: ${JSON.stringify(errorData)}`);
+    // 3. 업로드 작업 완료 대기
+    console.log('Waiting for upload operation to complete...');
+    while (!operation.done) {
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      operation = await ai.operations.get({ operation });
     }
 
-    const importData = await importResponse.json();
-    console.log('Document imported to File Search Store');
+    console.log('File uploaded and indexed successfully');
 
     // 4. 로컬 DB에 지식 파일 저장
     const knowledgeFile = createKnowledgeFile(session.userId, file.name, content);
 
     // Gemini 정보 업데이트
-    updateKnowledgeFileGeminiInfo(
-      knowledgeFile.id,
-      userStore.storeName,
-      uploadResult.file.name
-    );
+    updateKnowledgeFileGeminiInfo(knowledgeFile.id, userStore.storeName, file.name);
 
     // 임시 파일 삭제
     if (tempFilePath) {

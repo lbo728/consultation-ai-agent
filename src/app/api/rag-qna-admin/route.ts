@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { GoogleGenAI } from '@google/genai';
 import { getSession } from '@/lib/session';
 import { getUserFileSearchStore } from '@/lib/knowledge';
 
-const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY || '');
+const ai = new GoogleGenAI({
+  apiKey: process.env.GOOGLE_AI_API_KEY,
+});
 
 const BRAND_TONE_INSTRUCTION = `
 당신은 데코지오의 고객 상담 전문가입니다.
@@ -65,27 +67,24 @@ export async function POST(request: NextRequest) {
     console.log('Generating response with File Search Store:', userStore.storeName);
 
     // Gemini File Search를 사용한 RAG
-    const model = genAI.getGenerativeModel({
+    const response = await ai.models.generateContent({
       model: 'gemini-2.0-flash-exp',
-      systemInstruction: BRAND_TONE_INSTRUCTION,
-    });
-
-    const result = await model.generateContent({
       contents: query,
-      generationConfig: {
+      systemInstruction: BRAND_TONE_INSTRUCTION,
+      config: {
         temperature: 0.7,
         maxOutputTokens: 1000,
-      },
-      tools: [
-        {
-          fileSearch: {
-            fileSearchStoreNames: [userStore.storeName],
+        tools: [
+          {
+            fileSearch: {
+              fileSearchStoreNames: [userStore.storeName],
+            },
           },
-        },
-      ],
+        ],
+      },
     });
 
-    const answer = result.response.text() || '답변을 생성할 수 없습니다.';
+    const answer = response.text || '답변을 생성할 수 없습니다.';
 
     console.log('Response generated successfully with File Search RAG');
 
