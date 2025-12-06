@@ -1,4 +1,4 @@
-// 브랜드 지식 관리 (MVP용 인메모리 저장)
+import { getServiceSupabase } from '@/lib/supabase';
 
 export interface KnowledgeFile {
   id: string;
@@ -7,7 +7,6 @@ export interface KnowledgeFile {
   content: string;
   size: number;
   uploadedAt: Date;
-  // Gemini File Search 관련 정보
   geminiFileSearchStoreName?: string;
   geminiDocumentName?: string;
 }
@@ -18,42 +17,99 @@ export interface UserFileSearchStore {
   createdAt: Date;
 }
 
-// 인메모리 저장소
-const knowledgeFiles: Map<string, KnowledgeFile> = new Map();
-const userStores: Map<string, UserFileSearchStore> = new Map();
-
-export function createKnowledgeFile(
+export async function createKnowledgeFile(
   userId: string,
   name: string,
   content: string
-): KnowledgeFile {
-  const file: KnowledgeFile = {
-    id: crypto.randomUUID(),
-    userId,
-    name,
-    content,
-    size: content.length,
-    uploadedAt: new Date(),
-  };
+): Promise<KnowledgeFile> {
+  const supabase = getServiceSupabase();
 
-  knowledgeFiles.set(file.id, file);
-  return file;
-}
+  const { data, error } = await supabase
+    .from('knowledge_files')
+    .insert({
+      user_id: userId,
+      name,
+      content,
+      size: content.length,
+    })
+    .select()
+    .single();
 
-export function getKnowledgeFilesByUserId(userId: string): KnowledgeFile[] {
-  return Array.from(knowledgeFiles.values()).filter((file) => file.userId === userId);
-}
-
-export function getKnowledgeFileById(id: string): KnowledgeFile | undefined {
-  return knowledgeFiles.get(id);
-}
-
-export function deleteKnowledgeFile(id: string, userId: string): boolean {
-  const file = knowledgeFiles.get(id);
-  if (!file || file.userId !== userId) {
-    return false;
+  if (error) {
+    throw new Error(`지식 파일 생성 실패: ${error.message}`);
   }
-  return knowledgeFiles.delete(id);
+
+  return {
+    id: data.id,
+    userId: data.user_id,
+    name: data.name,
+    content: data.content,
+    size: data.size,
+    uploadedAt: new Date(data.uploaded_at),
+    geminiFileSearchStoreName: data.gemini_file_search_store_name || undefined,
+    geminiDocumentName: data.gemini_document_name || undefined,
+  };
+}
+
+export async function getKnowledgeFilesByUserId(userId: string): Promise<KnowledgeFile[]> {
+  const supabase = getServiceSupabase();
+
+  const { data, error } = await supabase
+    .from('knowledge_files')
+    .select('*')
+    .eq('user_id', userId);
+
+  if (error) {
+    throw new Error(`지식 파일 조회 실패: ${error.message}`);
+  }
+
+  return data.map((file) => ({
+    id: file.id,
+    userId: file.user_id,
+    name: file.name,
+    content: file.content,
+    size: file.size,
+    uploadedAt: new Date(file.uploaded_at),
+    geminiFileSearchStoreName: file.gemini_file_search_store_name || undefined,
+    geminiDocumentName: file.gemini_document_name || undefined,
+  }));
+}
+
+export async function getKnowledgeFileById(id: string): Promise<KnowledgeFile | undefined> {
+  const supabase = getServiceSupabase();
+
+  const { data, error } = await supabase
+    .from('knowledge_files')
+    .select('*')
+    .eq('id', id)
+    .single();
+
+  if (error || !data) {
+    return undefined;
+  }
+
+  return {
+    id: data.id,
+    userId: data.user_id,
+    name: data.name,
+    content: data.content,
+    size: data.size,
+    uploadedAt: new Date(data.uploaded_at),
+    geminiFileSearchStoreName: data.gemini_file_search_store_name || undefined,
+    geminiDocumentName: data.gemini_document_name || undefined,
+  };
+}
+
+export async function deleteKnowledgeFile(id: string, userId: string): Promise<boolean> {
+  const supabase = getServiceSupabase();
+
+  const { error } = await supabase
+    .from('knowledge_files')
+    .delete()
+    .eq('id', id)
+    .eq('user_id', userId);
+
+  return !error;
 }
 
 export function getKnowledgeFileSafeData(file: KnowledgeFile) {
@@ -65,29 +121,70 @@ export function getKnowledgeFileSafeData(file: KnowledgeFile) {
   };
 }
 
-// File Search Store 관리
-export function createUserFileSearchStore(userId: string, storeName: string): UserFileSearchStore {
-  const store: UserFileSearchStore = {
-    userId,
-    storeName,
-    createdAt: new Date(),
+export async function createUserFileSearchStore(
+  userId: string,
+  storeName: string
+): Promise<UserFileSearchStore> {
+  const supabase = getServiceSupabase();
+
+  const { data, error } = await supabase
+    .from('file_search_stores')
+    .insert({
+      user_id: userId,
+      store_name: storeName,
+    })
+    .select()
+    .single();
+
+  if (error) {
+    throw new Error(`파일 검색 저장소 생성 실패: ${error.message}`);
+  }
+
+  return {
+    userId: data.user_id,
+    storeName: data.store_name,
+    createdAt: new Date(data.created_at),
   };
-  userStores.set(userId, store);
-  return store;
 }
 
-export function getUserFileSearchStore(userId: string): UserFileSearchStore | undefined {
-  return userStores.get(userId);
+export async function getUserFileSearchStore(
+  userId: string
+): Promise<UserFileSearchStore | undefined> {
+  const supabase = getServiceSupabase();
+
+  const { data, error } = await supabase
+    .from('file_search_stores')
+    .select('*')
+    .eq('user_id', userId)
+    .single();
+
+  if (error || !data) {
+    return undefined;
+  }
+
+  return {
+    userId: data.user_id,
+    storeName: data.store_name,
+    createdAt: new Date(data.created_at),
+  };
 }
 
-export function updateKnowledgeFileGeminiInfo(
+export async function updateKnowledgeFileGeminiInfo(
   fileId: string,
   geminiFileSearchStoreName: string,
   geminiDocumentName: string
-): void {
-  const file = knowledgeFiles.get(fileId);
-  if (file) {
-    file.geminiFileSearchStoreName = geminiFileSearchStoreName;
-    file.geminiDocumentName = geminiDocumentName;
+): Promise<void> {
+  const supabase = getServiceSupabase();
+
+  const { error } = await supabase
+    .from('knowledge_files')
+    .update({
+      gemini_file_search_store_name: geminiFileSearchStoreName,
+      gemini_document_name: geminiDocumentName,
+    })
+    .eq('id', fileId);
+
+  if (error) {
+    throw new Error(`지식 파일 Gemini 정보 업데이트 실패: ${error.message}`);
   }
 }

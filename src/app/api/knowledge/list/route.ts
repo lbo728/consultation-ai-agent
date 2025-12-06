@@ -10,13 +10,13 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 });
     }
 
-    const session = getSession(sessionId);
+    const session = await getSession(sessionId);
     if (!session) {
       return NextResponse.json({ error: '세션이 만료되었습니다.' }, { status: 401 });
     }
 
     // 사용자의 지식 파일 목록 가져오기
-    const files = getKnowledgeFilesByUserId(session.userId);
+    const files = await getKnowledgeFilesByUserId(session.userId);
     const safeFiles = files.map(getKnowledgeFileSafeData);
 
     return NextResponse.json({ files: safeFiles });

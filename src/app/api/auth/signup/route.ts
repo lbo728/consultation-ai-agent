@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
     const user = await createUser(username, password);
 
     // 세션 생성
-    const sessionId = createSession(user.id);
+    const sessionId = await createSession(user.id);
 
     // 쿠키에 세션 ID 저장
     const response = NextResponse.json({

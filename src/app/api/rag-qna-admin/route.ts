@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { GoogleGenAI } from '@google/genai';
-import { getSession } from '@/lib/session';
-import { getUserFileSearchStore } from '@/lib/knowledge';
+import { NextRequest, NextResponse } from "next/server";
+import { GoogleGenAI } from "@google/genai";
+import { getSession } from "@/lib/session";
+import { getUserFileSearchStore } from "@/lib/knowledge";
 
 const ai = new GoogleGenAI({
   apiKey: process.env.GOOGLE_AI_API_KEY,
@@ -28,52 +28,43 @@ const BRAND_TONE_INSTRUCTION = `
 export async function POST(request: NextRequest) {
   try {
     // 인증 확인
-    const sessionId = request.cookies.get('sessionId')?.value;
+    const sessionId = request.cookies.get("sessionId")?.value;
     if (!sessionId) {
-      return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 });
+      return NextResponse.json({ error: "로그인이 필요합니다." }, { status: 401 });
     }
 
-    const session = getSession(sessionId);
+    const session = await getSession(sessionId);
     if (!session) {
-      return NextResponse.json({ error: '세션이 만료되었습니다.' }, { status: 401 });
+      return NextResponse.json({ error: "세션이 만료되었습니다." }, { status: 401 });
     }
 
     const body = await request.json();
     const { knowledgeId, query } = body;
 
     if (!query) {
-      return NextResponse.json(
-        { error: '문의 내용을 입력해주세요.' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "문의 내용을 입력해주세요." }, { status: 400 });
     }
 
     if (!process.env.GOOGLE_AI_API_KEY) {
-      return NextResponse.json(
-        { error: 'Google AI API 키가 설정되지 않았습니다.' },
-        { status: 500 }
-      );
+      return NextResponse.json({ error: "Google AI API 키가 설정되지 않았습니다." }, { status: 500 });
     }
 
     // 사용자의 File Search Store 가져오기
-    const userStore = getUserFileSearchStore(session.userId);
+    const userStore = await getUserFileSearchStore(session.userId);
     if (!userStore) {
-      return NextResponse.json(
-        { error: '먼저 브랜드 지식을 업로드해주세요.' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "먼저 브랜드 지식을 업로드해주세요." }, { status: 404 });
     }
 
-    console.log('Generating response with File Search Store:', userStore.storeName);
+    console.log("Generating response with File Search Store:", userStore.storeName);
 
     // Gemini File Search를 사용한 RAG
     const response = await ai.models.generateContent({
-      model: 'gemini-2.0-flash-exp',
+      model: "gemini-2.5-flash",
       contents: query,
-      systemInstruction: BRAND_TONE_INSTRUCTION,
       config: {
+        systemInstruction: BRAND_TONE_INSTRUCTION,
         temperature: 0.7,
-        maxOutputTokens: 1000,
+        maxOutputTokens: 2000,
         tools: [
           {
             fileSearch: {
@@ -84,16 +75,16 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    const answer = response.text || '답변을 생성할 수 없습니다.';
+    const answer = response.text || "답변을 생성할 수 없습니다.";
 
-    console.log('Response generated successfully with File Search RAG');
+    console.log("Response generated successfully with File Search RAG");
 
     return NextResponse.json({ answer });
   } catch (error) {
-    console.error('Error in RAG QnA Admin:', error);
+    console.error("Error in RAG QnA Admin:", error);
     return NextResponse.json(
       {
-        error: error instanceof Error ? error.message : '답변 생성 중 오류가 발생했습니다.',
+        error: error instanceof Error ? error.message : "답변 생성 중 오류가 발생했습니다.",
         details: error instanceof Error ? error.stack : undefined,
       },
       { status: 500 }

@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 사용자 찾기
-    const user = findUserByUsername(username);
+    const user = await findUserByUsername(username);
     if (!user) {
       return NextResponse.json(
         { error: '아이디 또는 비밀번호가 올바르지 않습니다.' },
@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 세션 생성
-    const sessionId = createSession(user.id);
+    const sessionId = await createSession(user.id);
 
     // 쿠키에 세션 ID 저장
     const response = NextResponse.json({

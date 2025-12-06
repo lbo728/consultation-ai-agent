@@ -1,35 +1,72 @@
-// 간단한 세션 관리 (MVP용)
-// 실제 프로덕션에서는 Redis나 데이터베이스 세션 사용
+import { getServiceSupabase } from '@/lib/supabase';
 
 interface Session {
   userId: string;
   expiresAt: Date;
 }
 
-const sessions: Map<string, Session> = new Map();
-
-export function createSession(userId: string): string {
-  const sessionId = crypto.randomUUID();
+export async function createSession(userId: string): Promise<string> {
+  const supabase = getServiceSupabase();
+  const sessionToken = crypto.randomUUID();
   const expiresAt = new Date();
   expiresAt.setDate(expiresAt.getDate() + 7); // 7일 후 만료
 
-  sessions.set(sessionId, { userId, expiresAt });
-  return sessionId;
+  const { error } = await supabase
+    .from('sessions')
+    .insert({
+      user_id: userId,
+      session_token: sessionToken,
+      expires_at: expiresAt.toISOString(),
+    });
+
+  if (error) {
+    throw new Error(`세션 생성 실패: ${error.message}`);
+  }
+
+  return sessionToken;
 }
 
-export function getSession(sessionId: string): Session | null {
-  const session = sessions.get(sessionId);
-  if (!session) return null;
+export async function getSession(sessionToken: string): Promise<Session | null> {
+  const supabase = getServiceSupabase();
 
-  // 만료 체크
-  if (session.expiresAt < new Date()) {
-    sessions.delete(sessionId);
+  const { data, error } = await supabase
+    .from('sessions')
+    .select('*')
+    .eq('session_token', sessionToken)
+    .single();
+
+  if (error || !data) {
     return null;
   }
 
-  return session;
+  const expiresAt = new Date(data.expires_at);
+
+  // 만료 체크
+  if (expiresAt < new Date()) {
+    await deleteSession(sessionToken);
+    return null;
+  }
+
+  return {
+    userId: data.user_id,
+    expiresAt,
+  };
 }
 
-export function deleteSession(sessionId: string): void {
-  sessions.delete(sessionId);
+export async function deleteSession(sessionToken: string): Promise<void> {
+  const supabase = getServiceSupabase();
+
+  await supabase
+    .from('sessions')
+    .delete()
+    .eq('session_token', sessionToken);
+}
+
+export async function cleanupExpiredSessions(): Promise<void> {
+  const supabase = getServiceSupabase();
+
+  await supabase
+    .from('sessions')
+    .delete()
+    .lt('expires_at', new Date().toISOString());
 }

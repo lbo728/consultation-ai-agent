@@ -1,4 +1,5 @@
 import bcrypt from 'bcryptjs';
+import { getServiceSupabase } from '@/lib/supabase';
 
 export interface User {
   id: string;
@@ -7,36 +8,79 @@ export interface User {
   createdAt: Date;
 }
 
-// 간단한 인메모리 사용자 저장소 (MVP용)
-// 실제 프로덕션에서는 데이터베이스 사용
-const users: Map<string, User> = new Map();
-
 export async function createUser(username: string, password: string): Promise<User> {
+  const supabase = getServiceSupabase();
+
   // 중복 체크
-  if (findUserByUsername(username)) {
+  const existingUser = await findUserByUsername(username);
+  if (existingUser) {
     throw new Error('이미 존재하는 사용자입니다.');
   }
 
   // 비밀번호 해싱
   const passwordHash = await bcrypt.hash(password, 10);
 
-  const user: User = {
-    id: crypto.randomUUID(),
-    username,
-    passwordHash,
-    createdAt: new Date(),
+  const { data, error } = await supabase
+    .from('users')
+    .insert({
+      username,
+      password_hash: passwordHash,
+    })
+    .select()
+    .single();
+
+  if (error) {
+    throw new Error(`사용자 생성 실패: ${error.message}`);
+  }
+
+  return {
+    id: data.id,
+    username: data.username,
+    passwordHash: data.password_hash,
+    createdAt: new Date(data.created_at),
   };
-
-  users.set(user.id, user);
-  return user;
 }
 
-export function findUserByUsername(username: string): User | undefined {
-  return Array.from(users.values()).find((user) => user.username === username);
+export async function findUserByUsername(username: string): Promise<User | undefined> {
+  const supabase = getServiceSupabase();
+
+  const { data, error } = await supabase
+    .from('users')
+    .select('*')
+    .eq('username', username)
+    .single();
+
+  if (error || !data) {
+    return undefined;
+  }
+
+  return {
+    id: data.id,
+    username: data.username,
+    passwordHash: data.password_hash,
+    createdAt: new Date(data.created_at),
+  };
 }
 
-export function findUserById(id: string): User | undefined {
-  return users.get(id);
+export async function findUserById(id: string): Promise<User | undefined> {
+  const supabase = getServiceSupabase();
+
+  const { data, error } = await supabase
+    .from('users')
+    .select('*')
+    .eq('id', id)
+    .single();
+
+  if (error || !data) {
+    return undefined;
+  }
+
+  return {
+    id: data.id,
+    username: data.username,
+    passwordHash: data.password_hash,
+    createdAt: new Date(data.created_at),
+  };
 }
 
 export async function verifyPassword(password: string, passwordHash: string): Promise<boolean> {

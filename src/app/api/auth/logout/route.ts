@@ -6,7 +6,7 @@ export async function POST(request: NextRequest) {
     const sessionId = request.cookies.get('sessionId')?.value;
 
     if (sessionId) {
-      deleteSession(sessionId);
+      await deleteSession(sessionId);
     }
 
     const response = NextResponse.json({ success: true });

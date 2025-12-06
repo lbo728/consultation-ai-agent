@@ -10,7 +10,7 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 });
     }
 
-    const session = getSession(sessionId);
+    const session = await getSession(sessionId);
     if (!session) {
       return NextResponse.json({ error: '세션이 만료되었습니다.' }, { status: 401 });
     }
@@ -24,7 +24,7 @@ export async function DELETE(request: NextRequest) {
     }
 
     // 파일 삭제
-    const success = deleteKnowledgeFile(fileId, session.userId);
+    const success = await deleteKnowledgeFile(fileId, session.userId);
 
     if (!success) {
       return NextResponse.json({ error: '파일을 찾을 수 없거나 삭제 권한이 없습니다.' }, { status: 404 });
