@@ -1,23 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createUser, getUserSafeData } from '@/lib/auth';
-import { createSession } from '@/lib/session';
+import { signUp, getUserSafeData } from '@/lib/auth';
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { username, password } = body;
+    const { email, password } = body;
 
     // 입력 검증
-    if (!username || !password) {
+    if (!email || !password) {
       return NextResponse.json(
-        { error: '아이디와 비밀번호를 입력해주세요.' },
+        { error: '이메일과 비밀번호를 입력해주세요.' },
         { status: 400 }
       );
     }
 
-    if (username.length < 3) {
+    // 이메일 형식 검증
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
       return NextResponse.json(
-        { error: '아이디는 3자 이상이어야 합니다.' },
+        { error: '올바른 이메일 형식이 아닙니다.' },
         { status: 400 }
       );
     }
@@ -29,26 +30,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 사용자 생성
-    const user = await createUser(username, password);
+    // Supabase Auth로 회원가입
+    const user = await signUp(email, password);
 
-    // 세션 생성
-    const sessionId = await createSession(user.id);
-
-    // 쿠키에 세션 ID 저장
-    const response = NextResponse.json({
+    return NextResponse.json({
       success: true,
       user: getUserSafeData(user),
     });
-
-    response.cookies.set('sessionId', sessionId, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 60 * 60 * 24 * 7, // 7일
-    });
-
-    return response;
   } catch (error) {
     console.error('Signup error:', error);
     return NextResponse.json(

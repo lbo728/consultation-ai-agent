@@ -1,72 +1,24 @@
-import { getServiceSupabase } from '@/lib/supabase';
+// Supabase Auth를 사용하므로 커스텀 세션 관리는 필요 없습니다.
+// auth.ts의 getSession()을 사용하세요.
 
-interface Session {
-  userId: string;
-  expiresAt: Date;
-}
+import { supabase } from '@/lib/supabase';
 
-export async function createSession(userId: string): Promise<string> {
-  const supabase = getServiceSupabase();
-  const sessionToken = crypto.randomUUID();
-  const expiresAt = new Date();
-  expiresAt.setDate(expiresAt.getDate() + 7); // 7일 후 만료
-
-  const { error } = await supabase
-    .from('sessions')
-    .insert({
-      user_id: userId,
-      session_token: sessionToken,
-      expires_at: expiresAt.toISOString(),
-    });
+export async function getSession() {
+  const { data: { session }, error } = await supabase.auth.getSession();
 
   if (error) {
-    throw new Error(`세션 생성 실패: ${error.message}`);
-  }
-
-  return sessionToken;
-}
-
-export async function getSession(sessionToken: string): Promise<Session | null> {
-  const supabase = getServiceSupabase();
-
-  const { data, error } = await supabase
-    .from('sessions')
-    .select('*')
-    .eq('session_token', sessionToken)
-    .single();
-
-  if (error || !data) {
     return null;
   }
 
-  const expiresAt = new Date(data.expires_at);
+  return session;
+}
 
-  // 만료 체크
-  if (expiresAt < new Date()) {
-    await deleteSession(sessionToken);
+export async function getCurrentUser() {
+  const { data: { user }, error } = await supabase.auth.getUser();
+
+  if (error || !user) {
     return null;
   }
 
-  return {
-    userId: data.user_id,
-    expiresAt,
-  };
-}
-
-export async function deleteSession(sessionToken: string): Promise<void> {
-  const supabase = getServiceSupabase();
-
-  await supabase
-    .from('sessions')
-    .delete()
-    .eq('session_token', sessionToken);
-}
-
-export async function cleanupExpiredSessions(): Promise<void> {
-  const supabase = getServiceSupabase();
-
-  await supabase
-    .from('sessions')
-    .delete()
-    .lt('expires_at', new Date().toISOString());
+  return user;
 }

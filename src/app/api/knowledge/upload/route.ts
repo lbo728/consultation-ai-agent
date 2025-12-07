@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenAI } from "@google/genai";
-import { getSession } from "@/lib/session";
+import { getCurrentUser } from "@/lib/auth";
 import {
   createKnowledgeFile,
   getKnowledgeFileSafeData,
@@ -21,14 +21,9 @@ export async function POST(request: NextRequest) {
 
   try {
     // 인증 확인
-    const sessionId = request.cookies.get("sessionId")?.value;
-    if (!sessionId) {
+    const user = await getCurrentUser();
+    if (!user) {
       return NextResponse.json({ error: "로그인이 필요합니다." }, { status: 401 });
-    }
-
-    const session = await getSession(sessionId);
-    if (!session) {
-      return NextResponse.json({ error: "세션이 만료되었습니다." }, { status: 401 });
     }
 
     if (!process.env.GOOGLE_AI_API_KEY) {
@@ -55,19 +50,19 @@ export async function POST(request: NextRequest) {
     console.log("Uploading file to Gemini:", file.name);
 
     // 1. 사용자별 File Search Store 확인 또는 생성
-    let userStore = await getUserFileSearchStore(session.userId);
+    let userStore = await getUserFileSearchStore(user.id);
 
     if (!userStore) {
-      console.log("Creating new File Search Store for user:", session.userId);
+      console.log("Creating new File Search Store for user:", user.id);
       const fileSearchStore = await ai.fileSearchStores.create({
-        config: { displayName: `store-${session.userId}` },
+        config: { displayName: `store-${user.id}` },
       });
 
       if (!fileSearchStore.name) {
         throw new Error("Failed to create File Search Store: no name returned");
       }
 
-      userStore = await createUserFileSearchStore(session.userId, fileSearchStore.name);
+      userStore = await createUserFileSearchStore(user.id, fileSearchStore.name);
       console.log("Created File Search Store:", userStore.storeName);
     }
 
@@ -113,7 +108,7 @@ export async function POST(request: NextRequest) {
     console.log("File uploaded and indexed successfully");
 
     // 4. 로컬 DB에 지식 파일 저장
-    const knowledgeFile = await createKnowledgeFile(session.userId, file.name, content);
+    const knowledgeFile = await createKnowledgeFile(user.id, file.name, content);
 
     // Gemini 정보 업데이트
     await updateKnowledgeFileGeminiInfo(knowledgeFile.id, userStore.storeName, file.name);

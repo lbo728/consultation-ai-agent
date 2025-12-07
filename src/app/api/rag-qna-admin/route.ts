@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenAI } from "@google/genai";
-import { getSession } from "@/lib/session";
+import { getCurrentUser } from "@/lib/auth";
 import { getUserFileSearchStore } from "@/lib/knowledge";
 
 const ai = new GoogleGenAI({
@@ -28,14 +28,9 @@ const BRAND_TONE_INSTRUCTION = `
 export async function POST(request: NextRequest) {
   try {
     // 인증 확인
-    const sessionId = request.cookies.get("sessionId")?.value;
-    if (!sessionId) {
+    const user = await getCurrentUser();
+    if (!user) {
       return NextResponse.json({ error: "로그인이 필요합니다." }, { status: 401 });
-    }
-
-    const session = await getSession(sessionId);
-    if (!session) {
-      return NextResponse.json({ error: "세션이 만료되었습니다." }, { status: 401 });
     }
 
     const body = await request.json();
@@ -50,7 +45,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 사용자의 File Search Store 가져오기
-    const userStore = await getUserFileSearchStore(session.userId);
+    const userStore = await getUserFileSearchStore(user.id);
     if (!userStore) {
       return NextResponse.json({ error: "먼저 브랜드 지식을 업로드해주세요." }, { status: 404 });
     }

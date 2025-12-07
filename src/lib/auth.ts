@@ -1,96 +1,90 @@
-import bcrypt from 'bcryptjs';
-import { getServiceSupabase } from '@/lib/supabase';
+import { supabase } from '@/lib/supabase';
+import type { User } from '@supabase/supabase-js';
 
-export interface User {
+export interface AuthUser {
   id: string;
-  username: string;
-  passwordHash: string;
+  email: string;
   createdAt: Date;
 }
 
-export async function createUser(username: string, password: string): Promise<User> {
-  const supabase = getServiceSupabase();
-
-  // 중복 체크
-  const existingUser = await findUserByUsername(username);
-  if (existingUser) {
-    throw new Error('이미 존재하는 사용자입니다.');
-  }
-
-  // 비밀번호 해싱
-  const passwordHash = await bcrypt.hash(password, 10);
-
-  const { data, error } = await supabase
-    .from('users')
-    .insert({
-      username,
-      password_hash: passwordHash,
-    })
-    .select()
-    .single();
+export async function signUp(email: string, password: string): Promise<AuthUser> {
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+  });
 
   if (error) {
-    throw new Error(`사용자 생성 실패: ${error.message}`);
+    throw new Error(error.message);
+  }
+
+  if (!data.user) {
+    throw new Error('사용자 생성에 실패했습니다.');
   }
 
   return {
-    id: data.id,
-    username: data.username,
-    passwordHash: data.password_hash,
-    createdAt: new Date(data.created_at),
+    id: data.user.id,
+    email: data.user.email!,
+    createdAt: new Date(data.user.created_at),
   };
 }
 
-export async function findUserByUsername(username: string): Promise<User | undefined> {
-  const supabase = getServiceSupabase();
+export async function signIn(email: string, password: string): Promise<AuthUser> {
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
 
-  const { data, error } = await supabase
-    .from('users')
-    .select('*')
-    .eq('username', username)
-    .single();
+  if (error) {
+    throw new Error(error.message);
+  }
 
-  if (error || !data) {
-    return undefined;
+  if (!data.user) {
+    throw new Error('로그인에 실패했습니다.');
   }
 
   return {
-    id: data.id,
-    username: data.username,
-    passwordHash: data.password_hash,
-    createdAt: new Date(data.created_at),
+    id: data.user.id,
+    email: data.user.email!,
+    createdAt: new Date(data.user.created_at),
   };
 }
 
-export async function findUserById(id: string): Promise<User | undefined> {
-  const supabase = getServiceSupabase();
+export async function signOut(): Promise<void> {
+  const { error } = await supabase.auth.signOut();
 
-  const { data, error } = await supabase
-    .from('users')
-    .select('*')
-    .eq('id', id)
-    .single();
+  if (error) {
+    throw new Error(error.message);
+  }
+}
 
-  if (error || !data) {
-    return undefined;
+export async function getCurrentUser(): Promise<AuthUser | null> {
+  const { data: { user }, error } = await supabase.auth.getUser();
+
+  if (error || !user) {
+    return null;
   }
 
-  return {
-    id: data.id,
-    username: data.username,
-    passwordHash: data.password_hash,
-    createdAt: new Date(data.created_at),
-  };
-}
-
-export async function verifyPassword(password: string, passwordHash: string): Promise<boolean> {
-  return bcrypt.compare(password, passwordHash);
-}
-
-export function getUserSafeData(user: User) {
   return {
     id: user.id,
-    username: user.username,
-    createdAt: user.createdAt,
+    email: user.email!,
+    createdAt: new Date(user.created_at),
+  };
+}
+
+export async function getSession() {
+  const { data: { session }, error } = await supabase.auth.getSession();
+
+  if (error) {
+    return null;
+  }
+
+  return session;
+}
+
+export function getUserSafeData(user: User | AuthUser) {
+  return {
+    id: user.id,
+    email: 'email' in user ? user.email : (user as User).email,
+    createdAt: 'createdAt' in user ? user.createdAt : new Date((user as User).created_at),
   };
 }

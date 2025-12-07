@@ -1,18 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getSession } from '@/lib/session';
+import { getCurrentUser } from '@/lib/auth';
 import { deleteKnowledgeFile } from '@/lib/knowledge';
 
 export async function DELETE(request: NextRequest) {
   try {
     // 인증 확인
-    const sessionId = request.cookies.get('sessionId')?.value;
-    if (!sessionId) {
+    const user = await getCurrentUser();
+    if (!user) {
       return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 });
-    }
-
-    const session = await getSession(sessionId);
-    if (!session) {
-      return NextResponse.json({ error: '세션이 만료되었습니다.' }, { status: 401 });
     }
 
     // 파일 ID 받기
@@ -24,7 +19,7 @@ export async function DELETE(request: NextRequest) {
     }
 
     // 파일 삭제
-    const success = await deleteKnowledgeFile(fileId, session.userId);
+    const success = await deleteKnowledgeFile(fileId, user.id);
 
     if (!success) {
       return NextResponse.json({ error: '파일을 찾을 수 없거나 삭제 권한이 없습니다.' }, { status: 404 });

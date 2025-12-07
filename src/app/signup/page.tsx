@@ -6,7 +6,7 @@ import Link from 'next/link';
 
 export default function SignupPage() {
   const router = useRouter();
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
@@ -27,7 +27,7 @@ export default function SignupPage() {
       const response = await fetch('/api/auth/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ email, password }),
       });
 
       const data = await response.json();
@@ -38,6 +38,7 @@ export default function SignupPage() {
 
       // 회원가입 성공, 대시보드로 이동
       router.push('/admin/dashboard');
+      router.refresh();
     } catch (error) {
       setError(error instanceof Error ? error.message : '회원가입 중 오류가 발생했습니다.');
     } finally {
@@ -61,17 +62,17 @@ export default function SignupPage() {
           )}
 
           <div>
-            <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-2">
-              아이디
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+              이메일
             </label>
             <input
-              type="text"
-              id="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="아이디를 입력하세요"
+              placeholder="example@email.com"
             />
           </div>
 
@@ -86,7 +87,7 @@ export default function SignupPage() {
               onChange={(e) => setPassword(e.target.value)}
               required
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="비밀번호를 입력하세요"
+              placeholder="비밀번호를 입력하세요 (6자 이상)"
             />
           </div>
 
