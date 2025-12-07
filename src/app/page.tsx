@@ -1,3 +1,4 @@
+import Navbar from "@/components/landing/Navbar";
 import Hero from "@/components/landing/Hero";
 import BeforeAfter from "@/components/landing/BeforeAfter";
 import Demo from "@/components/landing/Demo";
@@ -12,6 +13,7 @@ import Footer from "@/components/landing/Footer";
 export default function Home() {
   return (
     <main className="min-h-screen">
+      <Navbar />
       <Hero />
       <BeforeAfter />
       <Demo />
