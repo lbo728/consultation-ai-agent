@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenAI } from "@google/genai";
 import { getCurrentUser } from "@/lib/auth";
 import { getUserFileSearchStore } from "@/lib/knowledge";
+import { getBrandToneById } from "@/lib/brandTone";
 
 const ai = new GoogleGenAI({
   apiKey: process.env.GOOGLE_AI_API_KEY,
@@ -39,7 +40,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { knowledgeId, query } = body;
+    const { query, brandToneId } = body;
 
     if (!query) {
       return NextResponse.json({ error: "문의 내용을 입력해주세요." }, { status: 400 });
@@ -55,6 +56,16 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "먼저 브랜드 지식을 업로드해주세요." }, { status: 404 });
     }
 
+    // 브랜드 톤 가져오기 (선택된 경우)
+    let systemInstruction = BRAND_TONE_INSTRUCTION;
+    if (brandToneId) {
+      const brandTone = await getBrandToneById(brandToneId);
+      if (brandTone && brandTone.userId === user.id) {
+        systemInstruction = brandTone.instructionContent;
+        console.log("Using custom brand tone:", brandTone.name);
+      }
+    }
+
     console.log("Generating response with File Search Store:", userStore.storeName);
 
     // Gemini File Search를 사용한 RAG
@@ -62,7 +73,7 @@ export async function POST(request: NextRequest) {
       model: "gemini-2.5-flash",
       contents: query,
       config: {
-        systemInstruction: BRAND_TONE_INSTRUCTION,
+        systemInstruction,
         temperature: 0.7,
         maxOutputTokens: 2000,
         tools: [

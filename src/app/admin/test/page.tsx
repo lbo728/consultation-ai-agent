@@ -9,15 +9,26 @@ interface KnowledgeFile {
   uploadedAt: string;
 }
 
+interface BrandTone {
+  id: string;
+  name: string;
+  description?: string;
+  isDefault: boolean;
+  createdAt: string;
+}
+
 export default function AdminTestPage() {
   const [knowledgeFiles, setKnowledgeFiles] = useState<KnowledgeFile[]>([]);
+  const [brandTones, setBrandTones] = useState<BrandTone[]>([]);
   const [selectedKnowledge, setSelectedKnowledge] = useState('');
+  const [selectedBrandTone, setSelectedBrandTone] = useState('');
   const [query, setQuery] = useState('');
   const [answer, setAnswer] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     loadKnowledgeFiles();
+    loadBrandTones();
   }, []);
 
   const loadKnowledgeFiles = async () => {
@@ -33,6 +44,25 @@ export default function AdminTestPage() {
       }
     } catch (error) {
       console.error('Failed to load knowledge files:', error);
+    }
+  };
+
+  const loadBrandTones = async () => {
+    try {
+      const response = await fetch('/api/brand-tones/list');
+      if (response.ok) {
+        const data = await response.json();
+        setBrandTones(data.brandTones);
+        // 기본 톤이 있으면 선택, 없으면 첫 번째 톤 선택
+        const defaultTone = data.brandTones.find((tone: BrandTone) => tone.isDefault);
+        if (defaultTone) {
+          setSelectedBrandTone(defaultTone.id);
+        } else if (data.brandTones.length > 0) {
+          setSelectedBrandTone(data.brandTones[0].id);
+        }
+      }
+    } catch (error) {
+      console.error('Failed to load brand tones:', error);
     }
   };
 
@@ -59,6 +89,7 @@ export default function AdminTestPage() {
         body: JSON.stringify({
           knowledgeId: selectedKnowledge,
           query,
+          brandToneId: selectedBrandTone || undefined,
         }),
       });
 
@@ -110,6 +141,39 @@ export default function AdminTestPage() {
                   </option>
                 ))}
               </select>
+            )}
+          </div>
+
+          {/* 브랜드 톤 선택 */}
+          <div>
+            <label htmlFor="brandTone" className="block text-sm font-medium text-gray-700 mb-2">
+              사용할 브랜드 톤
+            </label>
+            {brandTones.length === 0 ? (
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <p className="text-sm text-blue-800">
+                  등록된 브랜드 톤이 없습니다. 기본 톤이 사용됩니다.
+                </p>
+              </div>
+            ) : (
+              <select
+                id="brandTone"
+                value={selectedBrandTone}
+                onChange={(e) => setSelectedBrandTone(e.target.value)}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                <option value="">기본 톤 사용</option>
+                {brandTones.map((tone) => (
+                  <option key={tone.id} value={tone.id}>
+                    {tone.name} {tone.isDefault && '(기본)'}
+                  </option>
+                ))}
+              </select>
+            )}
+            {selectedBrandTone && brandTones.find((t) => t.id === selectedBrandTone)?.description && (
+              <p className="mt-2 text-sm text-gray-600">
+                {brandTones.find((t) => t.id === selectedBrandTone)?.description}
+              </p>
             )}
           </div>
 
