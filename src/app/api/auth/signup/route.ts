@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { signUp, getUserSafeData } from '@/lib/auth';
+import { getUserSafeData } from '@/lib/auth';
+import { getServerSupabase } from '@/lib/supabase';
 
 export async function POST(request: NextRequest) {
   try {
@@ -30,8 +31,32 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Supabase Auth로 회원가입
-    const user = await signUp(email, password);
+    // 서버 사이드 Supabase 클라이언트로 회원가입
+    const supabase = await getServerSupabase();
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+    });
+
+    if (error) {
+      return NextResponse.json(
+        { error: error.message },
+        { status: 400 }
+      );
+    }
+
+    if (!data.user) {
+      return NextResponse.json(
+        { error: '사용자 생성에 실패했습니다.' },
+        { status: 500 }
+      );
+    }
+
+    const user = {
+      id: data.user.id,
+      email: data.user.email!,
+      createdAt: new Date(data.user.created_at),
+    };
 
     return NextResponse.json({
       success: true,
