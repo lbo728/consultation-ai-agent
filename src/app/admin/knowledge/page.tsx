@@ -32,6 +32,14 @@ export default function KnowledgePage() {
   const [toneDescription, setToneDescription] = useState('');
   const [toneIsDefault, setToneIsDefault] = useState(false);
 
+  // Direct write modal states
+  const [showKnowledgeWriteModal, setShowKnowledgeWriteModal] = useState(false);
+  const [showToneWriteModal, setShowToneWriteModal] = useState(false);
+  const [writeTitle, setWriteTitle] = useState('');
+  const [writeContent, setWriteContent] = useState('');
+  const [writeDescription, setWriteDescription] = useState('');
+  const [writeIsDefault, setWriteIsDefault] = useState(false);
+
   useEffect(() => {
     loadKnowledgeFiles();
     loadBrandTones();
@@ -184,6 +192,98 @@ export default function KnowledgePage() {
     }
   };
 
+  const handleKnowledgeDirectWrite = async () => {
+    if (!writeTitle.trim()) {
+      setUploadError('제목을 입력해주세요.');
+      return;
+    }
+
+    if (!writeContent.trim()) {
+      setUploadError('내용을 입력해주세요.');
+      return;
+    }
+
+    setIsUploading(true);
+    setUploadError('');
+
+    try {
+      const response = await fetch('/api/knowledge/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: writeTitle,
+          content: writeContent,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || '지식 추가에 실패했습니다.');
+      }
+
+      // Reset form and close modal
+      setWriteTitle('');
+      setWriteContent('');
+      setShowKnowledgeWriteModal(false);
+
+      // Reload knowledge files
+      await loadKnowledgeFiles();
+    } catch (error) {
+      setUploadError(error instanceof Error ? error.message : '지식 추가 중 오류가 발생했습니다.');
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleToneDirectWrite = async () => {
+    if (!writeTitle.trim()) {
+      setUploadError('브랜드 톤 이름을 입력해주세요.');
+      return;
+    }
+
+    if (!writeContent.trim()) {
+      setUploadError('내용을 입력해주세요.');
+      return;
+    }
+
+    setIsUploading(true);
+    setUploadError('');
+
+    try {
+      const response = await fetch('/api/brand-tones/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: writeTitle,
+          description: writeDescription,
+          content: writeContent,
+          isDefault: writeIsDefault,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || '브랜드 톤 추가에 실패했습니다.');
+      }
+
+      // Reset form and close modal
+      setWriteTitle('');
+      setWriteContent('');
+      setWriteDescription('');
+      setWriteIsDefault(false);
+      setShowToneWriteModal(false);
+
+      // Reload brand tones
+      await loadBrandTones();
+    } catch (error) {
+      setUploadError(error instanceof Error ? error.message : '브랜드 톤 추가 중 오류가 발생했습니다.');
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   const formatFileSize = (bytes: number) => {
     if (bytes < 1024) return `${bytes} B`;
     if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
@@ -232,7 +332,15 @@ export default function KnowledgePage() {
         <>
           {/* Upload Section */}
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">새 문서 업로드</h2>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold text-gray-900">새 문서 추가</h2>
+              <button
+                onClick={() => setShowKnowledgeWriteModal(true)}
+                className="px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
+              >
+                직접 작성하기
+              </button>
+            </div>
 
             {uploadError && (
               <div className="mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
@@ -317,7 +425,15 @@ export default function KnowledgePage() {
         <>
           {/* Tone Upload Section */}
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">새 브랜드 톤 업로드</h2>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold text-gray-900">새 브랜드 톤 추가</h2>
+              <button
+                onClick={() => setShowToneWriteModal(true)}
+                className="px-4 py-2 text-sm font-medium text-purple-600 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors"
+              >
+                직접 작성하기
+              </button>
+            </div>
 
             {uploadError && (
               <div className="mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
@@ -446,6 +562,173 @@ export default function KnowledgePage() {
             </ul>
           </div>
         </>
+      )}
+
+      {/* Knowledge Direct Write Modal */}
+      {showKnowledgeWriteModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <h2 className="text-xl font-semibold text-gray-900 mb-6">텍스트 내용 추가</h2>
+
+              {uploadError && (
+                <div className="mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+                  {uploadError}
+                </div>
+              )}
+
+              <div className="space-y-4">
+                <div>
+                  <label htmlFor="write-title" className="block text-sm font-medium text-gray-700 mb-2">
+                    제목
+                  </label>
+                  <input
+                    type="text"
+                    id="write-title"
+                    value={writeTitle}
+                    onChange={(e) => setWriteTitle(e.target.value)}
+                    placeholder="콘텐츠 이름 지정"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="write-content" className="block text-sm font-medium text-gray-700 mb-2">
+                    콘텐츠
+                  </label>
+                  <textarea
+                    id="write-content"
+                    value={writeContent}
+                    onChange={(e) => setWriteContent(e.target.value)}
+                    placeholder="내용을 입력하거나 붙여넣으세요."
+                    rows={12}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                  />
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-3 mt-6">
+                <button
+                  onClick={() => {
+                    setShowKnowledgeWriteModal(false);
+                    setWriteTitle('');
+                    setWriteContent('');
+                    setUploadError('');
+                  }}
+                  className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                  disabled={isUploading}
+                >
+                  취소
+                </button>
+                <button
+                  onClick={handleKnowledgeDirectWrite}
+                  disabled={isUploading}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+                >
+                  {isUploading ? '추가 중...' : '콘텐츠 추가'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Brand Tone Direct Write Modal */}
+      {showToneWriteModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <h2 className="text-xl font-semibold text-gray-900 mb-6">브랜드 톤 직접 작성</h2>
+
+              {uploadError && (
+                <div className="mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+                  {uploadError}
+                </div>
+              )}
+
+              <div className="space-y-4">
+                <div>
+                  <label htmlFor="tone-write-title" className="block text-sm font-medium text-gray-700 mb-2">
+                    톤 이름 *
+                  </label>
+                  <input
+                    type="text"
+                    id="tone-write-title"
+                    value={writeTitle}
+                    onChange={(e) => setWriteTitle(e.target.value)}
+                    placeholder="예: 데코지오 기본 톤"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="tone-write-description" className="block text-sm font-medium text-gray-700 mb-2">
+                    설명 (선택)
+                  </label>
+                  <input
+                    type="text"
+                    id="tone-write-description"
+                    value={writeDescription}
+                    onChange={(e) => setWriteDescription(e.target.value)}
+                    placeholder="예: 친절하고 전문적인 톤"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="tone-write-content" className="block text-sm font-medium text-gray-700 mb-2">
+                    콘텐츠 *
+                  </label>
+                  <textarea
+                    id="tone-write-content"
+                    value={writeContent}
+                    onChange={(e) => setWriteContent(e.target.value)}
+                    placeholder="답변 스타일, 톤, 예시 등을 입력하세요..."
+                    rows={12}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
+                  />
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    id="tone-write-default"
+                    checked={writeIsDefault}
+                    onChange={(e) => setWriteIsDefault(e.target.checked)}
+                    className="w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500"
+                  />
+                  <label htmlFor="tone-write-default" className="text-sm font-medium text-gray-700">
+                    기본 톤으로 설정
+                  </label>
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-3 mt-6">
+                <button
+                  onClick={() => {
+                    setShowToneWriteModal(false);
+                    setWriteTitle('');
+                    setWriteContent('');
+                    setWriteDescription('');
+                    setWriteIsDefault(false);
+                    setUploadError('');
+                  }}
+                  className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                  disabled={isUploading}
+                >
+                  취소
+                </button>
+                <button
+                  onClick={handleToneDirectWrite}
+                  disabled={isUploading}
+                  className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+                >
+                  {isUploading ? '추가 중...' : '브랜드 톤 추가'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
