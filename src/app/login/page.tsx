@@ -30,7 +30,7 @@ export default function LoginPage() {
       }
 
       // 로그인 성공, 대시보드로 이동
-      router.push('/admin/dashboard');
+      router.push('/dashboard');
       router.refresh();
     } catch (error) {
       setError(error instanceof Error ? error.message : '로그인 중 오류가 발생했습니다.');

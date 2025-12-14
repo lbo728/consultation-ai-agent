@@ -57,9 +57,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }
 
   const menuItems = [
-    { href: '/admin/dashboard', icon: LayoutDashboard, label: '대시보드' },
-    { href: '/admin/knowledge', icon: FileText, label: '브랜드 지식' },
-    { href: '/admin/test', icon: TestTube, label: '테스트' },
+    { href: '/dashboard', icon: LayoutDashboard, label: '대시보드' },
+    { href: '/knowledge', icon: FileText, label: '브랜드 지식' },
+    { href: '/admin-test', icon: TestTube, label: '테스트' },
   ];
 
   return (
