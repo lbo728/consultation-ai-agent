@@ -344,19 +344,19 @@ export default function KnowledgePage() {
   return (
     <div className="max-w-4xl mx-auto">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">브랜드 지식 관리</h1>
-        <p className="text-gray-600">AI가 참고할 브랜드 정보를 관리하세요</p>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">브랜드 지식 관리</h1>
+        <p className="text-gray-600 dark:text-gray-400">AI가 참고할 브랜드 정보를 관리하세요</p>
       </div>
 
       {/* Tabs */}
-      <div className="mb-6 border-b border-gray-200">
+      <div className="mb-6 border-b border-gray-200 dark:border-gray-700">
         <div className="flex gap-8">
           <button
             onClick={() => setActiveTab('knowledge')}
             className={`pb-4 px-1 border-b-2 font-medium transition-colors ${
               activeTab === 'knowledge'
-                ? 'border-blue-600 text-blue-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                ? 'border-blue-600 dark:border-blue-400 text-blue-600 dark:text-blue-400'
+                : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600'
             }`}
           >
             브랜드 지식
@@ -365,8 +365,8 @@ export default function KnowledgePage() {
             onClick={() => setActiveTab('tone')}
             className={`pb-4 px-1 border-b-2 font-medium transition-colors ${
               activeTab === 'tone'
-                ? 'border-blue-600 text-blue-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                ? 'border-blue-600 dark:border-blue-400 text-blue-600 dark:text-blue-400'
+                : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600'
             }`}
           >
             브랜드 톤
@@ -378,27 +378,27 @@ export default function KnowledgePage() {
       {activeTab === 'knowledge' && (
         <>
           {/* Upload Section */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-6">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-gray-900">새 문서 추가</h2>
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">새 문서 추가</h2>
               <button
                 onClick={() => setShowKnowledgeWriteModal(true)}
-                className="px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
+                className="px-4 py-2 text-sm font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors"
               >
                 직접 작성하기
               </button>
             </div>
 
             {uploadError && (
-              <div className="mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+              <div className="mb-4 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg text-sm">
                 {uploadError}
               </div>
             )}
 
-            <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-400 transition-colors">
-              <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-600 mb-2">클릭하여 파일 업로드</p>
-              <p className="text-sm text-gray-500">지원 형식: TXT, MD, PDF</p>
+            <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-8 text-center hover:border-blue-400 dark:hover:border-blue-500 transition-colors">
+              <Upload className="w-12 h-12 text-gray-400 dark:text-gray-500 mx-auto mb-4" />
+              <p className="text-gray-600 dark:text-gray-400 mb-2">클릭하여 파일 업로드</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">지원 형식: TXT, MD, PDF</p>
               <input
                 type="file"
                 accept=".txt,.md,.pdf"
@@ -421,25 +421,25 @@ export default function KnowledgePage() {
           </div>
 
           {/* Files List */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-            <div className="p-6 border-b border-gray-200">
-              <h2 className="text-lg font-semibold text-gray-900">업로드된 문서</h2>
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+            <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">업로드된 문서</h2>
             </div>
-            <div className="divide-y divide-gray-200">
+            <div className="divide-y divide-gray-200 dark:divide-gray-700">
               {knowledgeFiles.length === 0 ? (
-                <div className="p-6 text-center text-gray-500">
+                <div className="p-6 text-center text-gray-500 dark:text-gray-400">
                   업로드된 문서가 없습니다.
                 </div>
               ) : (
                 knowledgeFiles.map((file) => (
-                  <div key={file.id} className="p-6 flex items-center justify-between hover:bg-gray-50 transition-colors">
+                  <div key={file.id} className="p-6 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                     <div className="flex items-center gap-4">
-                      <div className="p-2 bg-blue-50 rounded-lg">
-                        <FileText className="w-6 h-6 text-blue-600" />
+                      <div className="p-2 bg-blue-50 dark:bg-blue-900/30 rounded-lg">
+                        <FileText className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                       </div>
                       <div>
-                        <p className="font-medium text-gray-900">{file.name}</p>
-                        <p className="text-sm text-gray-500">
+                        <p className="font-medium text-gray-900 dark:text-white">{file.name}</p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
                           {formatFileSize(file.size)} · {formatDate(file.uploadedAt)}
                         </p>
                       </div>
@@ -447,14 +447,14 @@ export default function KnowledgePage() {
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => handleViewKnowledge(file.id)}
-                        className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                        className="p-2 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors"
                         title="보기"
                       >
                         <Eye className="w-5 h-5" />
                       </button>
                       <button
                         onClick={() => handleDelete(file.id)}
-                        className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                        className="p-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors"
                         title="삭제"
                       >
                         <Trash2 className="w-5 h-5" />
@@ -467,9 +467,9 @@ export default function KnowledgePage() {
           </div>
 
           {/* Info Box */}
-          <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <h3 className="font-medium text-blue-900 mb-2">문서 업로드 가이드</h3>
-            <ul className="text-sm text-blue-800 space-y-1">
+          <div className="mt-6 bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+            <h3 className="font-medium text-blue-900 dark:text-blue-300 mb-2">문서 업로드 가이드</h3>
+            <ul className="text-sm text-blue-800 dark:text-blue-300 space-y-1">
               <li>• <strong>policy.txt</strong>: 브랜드의 공식 정책, 규칙, 가이드라인</li>
               <li>• <strong>qna.txt</strong>: 실제 고객 문의와 답변 사례</li>
             </ul>
@@ -481,26 +481,26 @@ export default function KnowledgePage() {
       {activeTab === 'tone' && (
         <>
           {/* Tone Upload Section */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-6">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-gray-900">새 브랜드 톤 추가</h2>
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">새 브랜드 톤 추가</h2>
               <button
                 onClick={() => setShowToneWriteModal(true)}
-                className="px-4 py-2 text-sm font-medium text-purple-600 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors"
+                className="px-4 py-2 text-sm font-medium text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/30 rounded-lg hover:bg-purple-100 dark:hover:bg-purple-900/50 transition-colors"
               >
                 직접 작성하기
               </button>
             </div>
 
             {uploadError && (
-              <div className="mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+              <div className="mb-4 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg text-sm">
                 {uploadError}
               </div>
             )}
 
             <div className="space-y-4 mb-4">
               <div>
-                <label htmlFor="tone-name" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="tone-name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   톤 이름 *
                 </label>
                 <input
@@ -509,12 +509,12 @@ export default function KnowledgePage() {
                   value={toneName}
                   onChange={(e) => setToneName(e.target.value)}
                   placeholder="예: 데코지오 기본 톤"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
                 />
               </div>
 
               <div>
-                <label htmlFor="tone-description" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="tone-description" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   설명 (선택)
                 </label>
                 <input
@@ -523,7 +523,7 @@ export default function KnowledgePage() {
                   value={toneDescription}
                   onChange={(e) => setToneDescription(e.target.value)}
                   placeholder="예: 친절하고 전문적인 톤"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
                 />
               </div>
 
@@ -533,18 +533,18 @@ export default function KnowledgePage() {
                   id="tone-default"
                   checked={toneIsDefault}
                   onChange={(e) => setToneIsDefault(e.target.checked)}
-                  className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                  className="w-4 h-4 text-blue-600 border-gray-300 dark:border-gray-600 rounded focus:ring-blue-500 dark:focus:ring-blue-400"
                 />
-                <label htmlFor="tone-default" className="text-sm font-medium text-gray-700">
+                <label htmlFor="tone-default" className="text-sm font-medium text-gray-700 dark:text-gray-300">
                   기본 톤으로 설정
                 </label>
               </div>
             </div>
 
-            <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-400 transition-colors">
-              <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-600 mb-2">클릭하여 파일 업로드</p>
-              <p className="text-sm text-gray-500">지원 형식: TXT, MD</p>
+            <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-8 text-center hover:border-blue-400 dark:hover:border-blue-500 transition-colors">
+              <Upload className="w-12 h-12 text-gray-400 dark:text-gray-500 mx-auto mb-4" />
+              <p className="text-gray-600 dark:text-gray-400 mb-2">클릭하여 파일 업로드</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">지원 형식: TXT, MD</p>
               <input
                 type="file"
                 accept=".txt,.md"
@@ -567,32 +567,32 @@ export default function KnowledgePage() {
           </div>
 
           {/* Tones List */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-            <div className="p-6 border-b border-gray-200">
-              <h2 className="text-lg font-semibold text-gray-900">업로드된 브랜드 톤</h2>
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+            <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">업로드된 브랜드 톤</h2>
             </div>
-            <div className="divide-y divide-gray-200">
+            <div className="divide-y divide-gray-200 dark:divide-gray-700">
               {brandTones.length === 0 ? (
-                <div className="p-6 text-center text-gray-500">
+                <div className="p-6 text-center text-gray-500 dark:text-gray-400">
                   업로드된 브랜드 톤이 없습니다.
                 </div>
               ) : (
                 brandTones.map((tone) => (
-                  <div key={tone.id} className="p-6 flex items-center justify-between hover:bg-gray-50 transition-colors">
+                  <div key={tone.id} className="p-6 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                     <div className="flex items-center gap-4">
-                      <div className="p-2 bg-purple-50 rounded-lg">
-                        <FileText className="w-6 h-6 text-purple-600" />
+                      <div className="p-2 bg-purple-50 dark:bg-purple-900/30 rounded-lg">
+                        <FileText className="w-6 h-6 text-purple-600 dark:text-purple-400" />
                       </div>
                       <div>
                         <div className="flex items-center gap-2">
-                          <p className="font-medium text-gray-900">{tone.name}</p>
+                          <p className="font-medium text-gray-900 dark:text-white">{tone.name}</p>
                           {tone.isDefault && (
-                            <span className="px-2 py-0.5 text-xs font-medium bg-blue-100 text-blue-800 rounded">
+                            <span className="px-2 py-0.5 text-xs font-medium bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-300 rounded">
                               기본
                             </span>
                           )}
                         </div>
-                        <p className="text-sm text-gray-500">
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
                           {tone.description || '설명 없음'} · {formatDate(tone.createdAt)}
                         </p>
                       </div>
@@ -600,14 +600,14 @@ export default function KnowledgePage() {
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => handleViewTone(tone.id)}
-                        className="p-2 text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
+                        className="p-2 text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/30 rounded-lg transition-colors"
                         title="보기"
                       >
                         <Eye className="w-5 h-5" />
                       </button>
                       <button
                         onClick={() => handleToneDelete(tone.id)}
-                        className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                        className="p-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors"
                         title="삭제"
                       >
                         <Trash2 className="w-5 h-5" />
@@ -620,9 +620,9 @@ export default function KnowledgePage() {
           </div>
 
           {/* Info Box */}
-          <div className="mt-6 bg-purple-50 border border-purple-200 rounded-lg p-4">
-            <h3 className="font-medium text-purple-900 mb-2">브랜드 톤 작성 가이드</h3>
-            <ul className="text-sm text-purple-800 space-y-1">
+          <div className="mt-6 bg-purple-50 dark:bg-purple-900/30 border border-purple-200 dark:border-purple-800 rounded-lg p-4">
+            <h3 className="font-medium text-purple-900 dark:text-purple-300 mb-2">브랜드 톤 작성 가이드</h3>
+            <ul className="text-sm text-purple-800 dark:text-purple-300 space-y-1">
               <li>• AI가 사용할 답변 스타일과 톤을 정의하세요</li>
               <li>• 인사말, 마무리 문구, 이모지 사용 여부 등을 포함하세요</li>
               <li>• 답변 형식 예시를 제공하면 더 정확한 결과를 얻을 수 있습니다</li>
@@ -634,19 +634,19 @@ export default function KnowledgePage() {
       {/* Knowledge Direct Write Modal */}
       {showKnowledgeWriteModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-6">텍스트 내용 추가</h2>
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">텍스트 내용 추가</h2>
 
               {uploadError && (
-                <div className="mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+                <div className="mb-4 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg text-sm">
                   {uploadError}
                 </div>
               )}
 
               <div className="space-y-4">
                 <div>
-                  <label htmlFor="write-title" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="write-title" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     제목
                   </label>
                   <input
@@ -655,12 +655,12 @@ export default function KnowledgePage() {
                     value={writeTitle}
                     onChange={(e) => setWriteTitle(e.target.value)}
                     placeholder="콘텐츠 이름 지정"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="write-content" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="write-content" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     콘텐츠
                   </label>
                   <textarea
@@ -669,7 +669,7 @@ export default function KnowledgePage() {
                     onChange={(e) => setWriteContent(e.target.value)}
                     placeholder="내용을 입력하거나 붙여넣으세요."
                     rows={12}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 resize-none"
                   />
                 </div>
               </div>
@@ -682,7 +682,7 @@ export default function KnowledgePage() {
                     setWriteContent('');
                     setUploadError('');
                   }}
-                  className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                  className="px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
                   disabled={isUploading}
                 >
                   취소
@@ -703,19 +703,19 @@ export default function KnowledgePage() {
       {/* Brand Tone Direct Write Modal */}
       {showToneWriteModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-6">브랜드 톤 직접 작성</h2>
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">브랜드 톤 직접 작성</h2>
 
               {uploadError && (
-                <div className="mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+                <div className="mb-4 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg text-sm">
                   {uploadError}
                 </div>
               )}
 
               <div className="space-y-4">
                 <div>
-                  <label htmlFor="tone-write-title" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="tone-write-title" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     톤 이름 *
                   </label>
                   <input
@@ -724,12 +724,12 @@ export default function KnowledgePage() {
                     value={writeTitle}
                     onChange={(e) => setWriteTitle(e.target.value)}
                     placeholder="예: 데코지오 기본 톤"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="tone-write-description" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="tone-write-description" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     설명 (선택)
                   </label>
                   <input
@@ -738,12 +738,12 @@ export default function KnowledgePage() {
                     value={writeDescription}
                     onChange={(e) => setWriteDescription(e.target.value)}
                     placeholder="예: 친절하고 전문적인 톤"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="tone-write-content" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="tone-write-content" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     콘텐츠 *
                   </label>
                   <textarea
@@ -752,7 +752,7 @@ export default function KnowledgePage() {
                     onChange={(e) => setWriteContent(e.target.value)}
                     placeholder="답변 스타일, 톤, 예시 등을 입력하세요..."
                     rows={12}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 resize-none"
                   />
                 </div>
 
@@ -762,9 +762,9 @@ export default function KnowledgePage() {
                     id="tone-write-default"
                     checked={writeIsDefault}
                     onChange={(e) => setWriteIsDefault(e.target.checked)}
-                    className="w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500"
+                    className="w-4 h-4 text-purple-600 border-gray-300 dark:border-gray-600 rounded focus:ring-purple-500 dark:focus:ring-purple-400"
                   />
-                  <label htmlFor="tone-write-default" className="text-sm font-medium text-gray-700">
+                  <label htmlFor="tone-write-default" className="text-sm font-medium text-gray-700 dark:text-gray-300">
                     기본 톤으로 설정
                   </label>
                 </div>
@@ -780,7 +780,7 @@ export default function KnowledgePage() {
                     setWriteIsDefault(false);
                     setUploadError('');
                   }}
-                  className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                  className="px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
                   disabled={isUploading}
                 >
                   취소
@@ -801,15 +801,15 @@ export default function KnowledgePage() {
       {/* File Viewer Modal */}
       {showViewerModal && viewerContent && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] flex flex-col">
-            <div className="p-6 border-b border-gray-200 flex items-center justify-between">
-              <h2 className="text-xl font-semibold text-gray-900">{viewerContent.name}</h2>
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] flex flex-col">
+            <div className="p-6 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white">{viewerContent.name}</h2>
               <button
                 onClick={() => {
                   setShowViewerModal(false);
                   setViewerContent(null);
                 }}
-                className="p-2 text-gray-500 hover:bg-gray-100 rounded-lg transition-colors"
+                className="p-2 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -818,11 +818,11 @@ export default function KnowledgePage() {
             </div>
             <div className="p-6 overflow-y-auto flex-1">
               {viewerContent.name.endsWith('.md') ? (
-                <div className="prose prose-sm max-w-none">
+                <div className="prose prose-sm dark:prose-invert max-w-none">
                   <ReactMarkdown>{viewerContent.content}</ReactMarkdown>
                 </div>
               ) : (
-                <pre className="whitespace-pre-wrap text-sm text-gray-800 font-mono">
+                <pre className="whitespace-pre-wrap text-sm text-gray-800 dark:text-gray-200 font-mono">
                   {viewerContent.content}
                 </pre>
               )}

@@ -65,13 +65,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex">
       {/* Sidebar */}
-      <aside className="w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col">
+      <aside className="w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col min-h-screen">
         <div className="p-6 border-b border-gray-200 dark:border-gray-700">
           <h1 className="text-xl font-bold text-gray-900 dark:text-white">AI 상담 에이전트</h1>
           <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">{user?.email}</p>
         </div>
 
-        <nav className="flex-1 p-4">
+        <nav className="p-4">
           <ul className="space-y-2">
             {menuItems.map((item) => {
               const Icon = item.icon;
@@ -95,6 +95,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             })}
           </ul>
         </nav>
+
+        {/* Spacer to push buttons to bottom */}
+        <div className="flex-1"></div>
 
         <div className="p-4 border-t border-gray-200 dark:border-gray-700 space-y-2">
           <button

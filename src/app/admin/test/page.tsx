@@ -111,21 +111,21 @@ export default function AdminTestPage() {
   return (
     <div className="max-w-4xl mx-auto">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">AI 답변 테스트</h1>
-        <p className="text-gray-600">업로드한 브랜드 지식을 기반으로 고객 문의에 대한 AI 답변을 테스트하세요</p>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">AI 답변 테스트</h1>
+        <p className="text-gray-600 dark:text-gray-400">업로드한 브랜드 지식을 기반으로 고객 문의에 대한 AI 답변을 테스트하세요</p>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* 지식 선택 */}
           <div>
-            <label htmlFor="knowledge" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="knowledge" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               사용할 브랜드 지식
             </label>
             {knowledgeFiles.length === 0 ? (
-              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                <p className="text-sm text-yellow-800">
-                  업로드된 지식이 없습니다. 먼저 <a href="/admin/knowledge" className="font-medium underline">브랜드 지식 페이지</a>에서 문서를 업로드해주세요.
+              <div className="bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-700 rounded-lg p-4">
+                <p className="text-sm text-yellow-800 dark:text-yellow-400">
+                  업로드된 지식이 없습니다. 먼저 <a href="/admin/knowledge" className="font-medium underline hover:text-yellow-900 dark:hover:text-yellow-300">브랜드 지식 페이지</a>에서 문서를 업로드해주세요.
                 </p>
               </div>
             ) : (
@@ -133,7 +133,7 @@ export default function AdminTestPage() {
                 id="knowledge"
                 value={selectedKnowledge}
                 onChange={(e) => setSelectedKnowledge(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 {knowledgeFiles.map((file) => (
                   <option key={file.id} value={file.id}>
@@ -146,12 +146,12 @@ export default function AdminTestPage() {
 
           {/* 브랜드 톤 선택 */}
           <div>
-            <label htmlFor="brandTone" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="brandTone" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               사용할 브랜드 톤
             </label>
             {brandTones.length === 0 ? (
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <p className="text-sm text-blue-800">
+              <div className="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-700 rounded-lg p-4">
+                <p className="text-sm text-blue-800 dark:text-blue-400">
                   등록된 브랜드 톤이 없습니다. 기본 톤이 사용됩니다.
                 </p>
               </div>
@@ -160,7 +160,7 @@ export default function AdminTestPage() {
                 id="brandTone"
                 value={selectedBrandTone}
                 onChange={(e) => setSelectedBrandTone(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 <option value="">기본 톤 사용</option>
                 {brandTones.map((tone) => (
@@ -171,7 +171,7 @@ export default function AdminTestPage() {
               </select>
             )}
             {selectedBrandTone && brandTones.find((t) => t.id === selectedBrandTone)?.description && (
-              <p className="mt-2 text-sm text-gray-600">
+              <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
                 {brandTones.find((t) => t.id === selectedBrandTone)?.description}
               </p>
             )}
@@ -179,7 +179,7 @@ export default function AdminTestPage() {
 
           {/* 문의 입력 */}
           <div>
-            <label htmlFor="query" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="query" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               고객 문의
             </label>
             <textarea
@@ -187,7 +187,7 @@ export default function AdminTestPage() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               rows={6}
-              className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 p-3"
+              className="block w-full text-sm text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 p-3"
               placeholder="고객의 문의 내용을 입력하세요..."
             />
           </div>
@@ -205,13 +205,13 @@ export default function AdminTestPage() {
         {/* 답변 표시 */}
         {answer && (
           <div className="mt-8">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">AI 답변</h2>
-            <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
-              <p className="text-gray-800 whitespace-pre-wrap">{answer}</p>
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">AI 답변</h2>
+            <div className="bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-6">
+              <p className="text-gray-800 dark:text-gray-200 whitespace-pre-wrap">{answer}</p>
             </div>
             <button
               onClick={() => navigator.clipboard.writeText(answer)}
-              className="mt-4 bg-gray-600 text-white py-2 px-4 rounded-lg font-medium hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors"
+              className="mt-4 bg-gray-600 dark:bg-gray-700 text-white py-2 px-4 rounded-lg font-medium hover:bg-gray-700 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 dark:focus:ring-gray-400 focus:ring-offset-2 transition-colors"
             >
               답변 복사
             </button>
