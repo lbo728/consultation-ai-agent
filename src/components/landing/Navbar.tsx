@@ -2,10 +2,12 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { LogIn, UserPlus } from "lucide-react";
+import { LogIn, UserPlus, Moon, Sun } from "lucide-react";
+import { useTheme } from "@/contexts/ThemeContext";
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
+  const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -20,7 +22,7 @@ export default function Navbar() {
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? "bg-white/80 backdrop-blur-lg shadow-sm"
+          ? "bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg shadow-sm"
           : "bg-transparent"
       }`}
     >
@@ -28,7 +30,7 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* 로고 */}
           <Link href="/" className="flex items-center">
-            <span className="text-xl font-bold text-gray-900">
+            <span className="text-xl font-bold text-gray-900 dark:text-white">
               AI 상담사
             </span>
           </Link>
@@ -37,19 +39,19 @@ export default function Navbar() {
           <div className="hidden md:flex items-center space-x-8">
             <a
               href="#features"
-              className="text-gray-600 hover:text-gray-900 transition-colors"
+              className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
             >
               기능
             </a>
             <a
               href="#pricing"
-              className="text-gray-600 hover:text-gray-900 transition-colors"
+              className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
             >
               가격
             </a>
             <Link
               href="/test"
-              className="text-gray-600 hover:text-gray-900 transition-colors"
+              className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
             >
               데모
             </Link>
@@ -57,9 +59,20 @@ export default function Navbar() {
 
           {/* 로그인/회원가입 버튼 */}
           <div className="flex items-center gap-3">
+            <button
+              onClick={toggleTheme}
+              className="p-2 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              aria-label="다크모드 토글"
+            >
+              {theme === 'dark' ? (
+                <Sun className="w-5 h-5" />
+              ) : (
+                <Moon className="w-5 h-5" />
+              )}
+            </button>
             <Link
               href="/login"
-              className="inline-flex items-center gap-2 px-4 py-2 text-gray-700 font-medium rounded-lg hover:bg-gray-100 transition-colors"
+              className="inline-flex items-center gap-2 px-4 py-2 text-gray-700 dark:text-gray-300 font-medium rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
             >
               <LogIn className="w-4 h-4" />
               <span className="hidden sm:inline">로그인</span>
