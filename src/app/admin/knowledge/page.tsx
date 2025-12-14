@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Upload, FileText, Trash2 } from 'lucide-react';
+import { Upload, FileText, Trash2, Eye } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
 
 interface KnowledgeFile {
   id: string;
@@ -39,6 +40,14 @@ export default function KnowledgePage() {
   const [writeContent, setWriteContent] = useState('');
   const [writeDescription, setWriteDescription] = useState('');
   const [writeIsDefault, setWriteIsDefault] = useState(false);
+
+  // Viewer modal states
+  const [showViewerModal, setShowViewerModal] = useState(false);
+  const [viewerContent, setViewerContent] = useState<{
+    name: string;
+    content: string;
+    type: 'knowledge' | 'tone';
+  } | null>(null);
 
   useEffect(() => {
     loadKnowledgeFiles();
@@ -294,6 +303,44 @@ export default function KnowledgePage() {
     return new Date(dateString).toLocaleDateString('ko-KR');
   };
 
+  const handleViewKnowledge = async (fileId: string) => {
+    try {
+      const response = await fetch(`/api/knowledge/view/${fileId}`);
+      if (!response.ok) {
+        throw new Error('파일을 불러올 수 없습니다.');
+      }
+
+      const data = await response.json();
+      setViewerContent({
+        name: data.file.name,
+        content: data.file.content,
+        type: 'knowledge',
+      });
+      setShowViewerModal(true);
+    } catch (error) {
+      alert(error instanceof Error ? error.message : '파일 조회 중 오류가 발생했습니다.');
+    }
+  };
+
+  const handleViewTone = async (toneId: string) => {
+    try {
+      const response = await fetch(`/api/brand-tones/view/${toneId}`);
+      if (!response.ok) {
+        throw new Error('브랜드 톤을 불러올 수 없습니다.');
+      }
+
+      const data = await response.json();
+      setViewerContent({
+        name: data.tone.name,
+        content: data.tone.content,
+        type: 'tone',
+      });
+      setShowViewerModal(true);
+    } catch (error) {
+      alert(error instanceof Error ? error.message : '브랜드 톤 조회 중 오류가 발생했습니다.');
+    }
+  };
+
   return (
     <div className="max-w-4xl mx-auto">
       <div className="mb-8">
@@ -397,12 +444,22 @@ export default function KnowledgePage() {
                         </p>
                       </div>
                     </div>
-                    <button
-                      onClick={() => handleDelete(file.id)}
-                      className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                    >
-                      <Trash2 className="w-5 h-5" />
-                    </button>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => handleViewKnowledge(file.id)}
+                        className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                        title="보기"
+                      >
+                        <Eye className="w-5 h-5" />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(file.id)}
+                        className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                        title="삭제"
+                      >
+                        <Trash2 className="w-5 h-5" />
+                      </button>
+                    </div>
                   </div>
                 ))
               )}
@@ -540,12 +597,22 @@ export default function KnowledgePage() {
                         </p>
                       </div>
                     </div>
-                    <button
-                      onClick={() => handleToneDelete(tone.id)}
-                      className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                    >
-                      <Trash2 className="w-5 h-5" />
-                    </button>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => handleViewTone(tone.id)}
+                        className="p-2 text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
+                        title="보기"
+                      >
+                        <Eye className="w-5 h-5" />
+                      </button>
+                      <button
+                        onClick={() => handleToneDelete(tone.id)}
+                        className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                        title="삭제"
+                      >
+                        <Trash2 className="w-5 h-5" />
+                      </button>
+                    </div>
                   </div>
                 ))
               )}
@@ -726,6 +793,39 @@ export default function KnowledgePage() {
                   {isUploading ? '추가 중...' : '브랜드 톤 추가'}
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* File Viewer Modal */}
+      {showViewerModal && viewerContent && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] flex flex-col">
+            <div className="p-6 border-b border-gray-200 flex items-center justify-between">
+              <h2 className="text-xl font-semibold text-gray-900">{viewerContent.name}</h2>
+              <button
+                onClick={() => {
+                  setShowViewerModal(false);
+                  setViewerContent(null);
+                }}
+                className="p-2 text-gray-500 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <div className="p-6 overflow-y-auto flex-1">
+              {viewerContent.name.endsWith('.md') ? (
+                <div className="prose prose-sm max-w-none">
+                  <ReactMarkdown>{viewerContent.content}</ReactMarkdown>
+                </div>
+              ) : (
+                <pre className="whitespace-pre-wrap text-sm text-gray-800 font-mono">
+                  {viewerContent.content}
+                </pre>
+              )}
             </div>
           </div>
         </div>

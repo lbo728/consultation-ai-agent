@@ -40,8 +40,13 @@ export async function POST(request: NextRequest) {
     if (!userStore) {
       const storeName = `user-${user.id}-store`;
       const createResponse = await ai.fileSearchStores.create({
-        displayName: storeName,
+        config: { displayName: storeName },
       });
+
+      if (!createResponse.name) {
+        throw new Error('Failed to create File Search Store: no name returned');
+      }
+
       userStore = await createUserFileSearchStore(user.id, createResponse.name);
     }
 
@@ -52,37 +57,26 @@ export async function POST(request: NextRequest) {
 
     try {
       // 4. File Search Store에 파일 업로드
-      const operation = await ai.fileSearchStores.uploadToFileSearchStore(userStore.storeName, tmpFilePath);
+      let operation = await ai.fileSearchStores.uploadToFileSearchStore({
+        file: tmpFilePath,
+        fileSearchStoreName: userStore.storeName,
+        config: {
+          displayName: name,
+          mimeType: 'text/plain',
+        },
+      });
 
       // 5. 업로드 완료 대기
-      let uploadComplete = false;
-      let attempts = 0;
-      const maxAttempts = 30;
-
-      while (!uploadComplete && attempts < maxAttempts) {
-        const status = await ai.operations.get(operation.name);
-        if (status.done) {
-          uploadComplete = true;
-          console.log('File upload completed:', status);
-
-          // 6. Gemini 정보 업데이트
-          if (status.response?.uploadedFiles?.[0]) {
-            const documentName = status.response.uploadedFiles[0].name;
-            await updateKnowledgeFileGeminiInfo(
-              knowledgeFile.id,
-              userStore.storeName,
-              documentName
-            );
-          }
-        } else {
-          attempts++;
-          await new Promise((resolve) => setTimeout(resolve, 1000));
-        }
+      console.log('Waiting for upload operation to complete...');
+      while (!operation.done) {
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        operation = await ai.operations.get({ operation });
       }
 
-      if (!uploadComplete) {
-        console.error('File upload timeout');
-      }
+      console.log('File uploaded and indexed successfully');
+
+      // 6. Gemini 정보 업데이트
+      await updateKnowledgeFileGeminiInfo(knowledgeFile.id, userStore.storeName, name);
     } finally {
       // 7. 임시 파일 삭제
       if (fs.existsSync(tmpFilePath)) {
