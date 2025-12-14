@@ -4,10 +4,10 @@ import { useState, useEffect } from "react";
 import { Zap, Users, Calculator, Ruler } from "lucide-react";
 
 const badges = [
-  { icon: Zap, text: "단 5초", color: "bg-yellow-100 text-yellow-800" },
-  { icon: Users, text: "브랜드 전용", color: "bg-blue-100 text-blue-800" },
-  { icon: Calculator, text: "자동 장수 계산", color: "bg-green-100 text-green-800" },
-  { icon: Ruler, text: "이음선 자동 안내", color: "bg-purple-100 text-purple-800" },
+  { icon: Zap, text: "단 5초", color: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400" },
+  { icon: Users, text: "브랜드 전용", color: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400" },
+  { icon: Calculator, text: "자동 장수 계산", color: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400" },
+  { icon: Ruler, text: "이음선 자동 안내", color: "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400" },
 ];
 
 const demoMessages = [
@@ -46,11 +46,11 @@ export default function Hero() {
   }, []);
 
   return (
-    <section className="min-h-screen flex items-center justify-center bg-gradient-to-b from-blue-50 via-white to-white relative overflow-hidden">
+    <section className="min-h-screen flex items-center justify-center bg-gradient-to-b from-blue-50 via-white to-white dark:from-gray-950 dark:via-black dark:to-black relative overflow-hidden">
       {/* 배경 장식 */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-100 rounded-full blur-3xl opacity-50" />
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-100 rounded-full blur-3xl opacity-50" />
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-100 dark:bg-blue-500/20 rounded-full blur-3xl opacity-50" />
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-100 dark:bg-purple-500/20 rounded-full blur-3xl opacity-50" />
       </div>
 
       <div className="max-w-6xl mx-auto px-4 py-20 relative z-10">
@@ -69,16 +69,16 @@ export default function Hero() {
           </div>
 
           {/* 헤드라인 */}
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
             오늘의집 문의,
             <br />
-            <span className="text-blue-600">이제 AI가 5초 안에</span>
+            <span className="text-blue-600 dark:text-blue-400">이제 AI가 5초 안에</span>
             <br />
             대신 답해줄게.
           </h1>
 
           {/* 서브 헤드라인 */}
-          <p className="text-lg md:text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+          <p className="text-lg md:text-xl text-gray-600 dark:text-gray-400 mb-8 max-w-2xl mx-auto">
             브랜드 가이드·톤까지 그대로 따라가는 전용 AI 상담사.
             <br />
             하루 30건 이상 반복 문의, 이제 복붙만 하면 끝.
@@ -88,13 +88,13 @@ export default function Hero() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
             <a
               href="/signup"
-              className="inline-flex items-center justify-center px-8 py-4 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition-colors shadow-lg shadow-blue-600/30"
+              className="inline-flex items-center justify-center px-8 py-4 bg-blue-600 dark:bg-blue-500 text-white font-semibold rounded-xl hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors shadow-lg shadow-blue-600/30 dark:shadow-blue-500/50"
             >
               👉 7일 무료로 시작하기
             </a>
             <a
               href="/test"
-              className="inline-flex items-center justify-center px-8 py-4 bg-white text-gray-700 font-semibold rounded-xl border-2 border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-colors"
+              className="inline-flex items-center justify-center px-8 py-4 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 font-semibold rounded-xl border-2 border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-gray-700 transition-colors"
             >
               👉 문의 붙여넣고 데모 보기
             </a>
@@ -103,49 +103,49 @@ export default function Hero() {
 
         {/* 데모 애니메이션 */}
         <div className="max-w-4xl mx-auto">
-          <div className="bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-100">
+          <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl dark:shadow-blue-500/10 overflow-hidden border border-gray-100 dark:border-gray-800">
             {/* 헤더 */}
-            <div className="bg-gray-50 px-6 py-4 border-b border-gray-100 flex items-center gap-2">
+            <div className="bg-gray-50 dark:bg-gray-800 px-6 py-4 border-b border-gray-100 dark:border-gray-700 flex items-center gap-2">
               <div className="w-3 h-3 rounded-full bg-red-400" />
               <div className="w-3 h-3 rounded-full bg-yellow-400" />
               <div className="w-3 h-3 rounded-full bg-green-400" />
-              <span className="ml-4 text-sm text-gray-500">AI 상담 에이전트</span>
+              <span className="ml-4 text-sm text-gray-500 dark:text-gray-400">AI 상담 에이전트</span>
             </div>
 
             <div className="p-6 md:p-8">
               <div className="grid md:grid-cols-2 gap-6">
                 {/* 문의 입력 */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">고객 문의</label>
-                  <div className="bg-gray-50 rounded-xl p-4 h-[180px] overflow-auto border border-gray-200">
-                    <p className="text-gray-800 whitespace-pre-wrap">{demoMessages[currentDemo].question}</p>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">고객 문의</label>
+                  <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-4 h-[180px] overflow-auto border border-gray-200 dark:border-gray-700">
+                    <p className="text-gray-800 dark:text-gray-200 whitespace-pre-wrap">{demoMessages[currentDemo].question}</p>
                   </div>
                 </div>
 
                 {/* AI 답변 */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    AI 답변 <span className="text-blue-600">(3초 생성)</span>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    AI 답변 <span className="text-blue-600 dark:text-blue-400">(3초 생성)</span>
                   </label>
                   <div
-                    className={`bg-blue-50 rounded-xl p-4 h-[180px] overflow-auto border border-blue-100 transition-all duration-500 ${
+                    className={`bg-blue-50 dark:bg-blue-900/30 rounded-xl p-4 h-[180px] overflow-auto border border-blue-100 dark:border-blue-800 transition-all duration-500 ${
                       showAnswer ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
                     }`}
                   >
-                    <p className="text-gray-800 whitespace-pre-wrap text-sm">{demoMessages[currentDemo].answer}</p>
+                    <p className="text-gray-800 dark:text-gray-200 whitespace-pre-wrap text-sm">{demoMessages[currentDemo].answer}</p>
                   </div>
                 </div>
               </div>
 
               {/* 부가 정보 */}
               <div className="mt-6 flex flex-wrap gap-3 justify-center">
-                <span className="inline-flex items-center px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium">
+                <span className="inline-flex items-center px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400 rounded-full text-xs font-medium">
                   ✓ 브랜드 톤 자동 적용
                 </span>
-                <span className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
+                <span className="inline-flex items-center px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400 rounded-full text-xs font-medium">
                   ✓ 장수 계산 자동 판단
                 </span>
-                <span className="inline-flex items-center px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-xs font-medium">
+                <span className="inline-flex items-center px-3 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-400 rounded-full text-xs font-medium">
                   ✓ 이음선 여부 자동 안내
                 </span>
               </div>

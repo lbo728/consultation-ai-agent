@@ -16,14 +16,14 @@ const afterItems = [
 
 export default function BeforeAfter() {
   return (
-    <section id="before-after" className="py-20 bg-white">
+    <section id="before-after" className="py-20 bg-white dark:bg-gray-950">
       <div className="max-w-6xl mx-auto px-4">
         {/* 섹션 헤더 */}
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
             CS 업무, 이렇게 달라져요
           </h2>
-          <p className="text-gray-600 max-w-xl mx-auto">
+          <p className="text-gray-600 dark:text-gray-400 max-w-xl mx-auto">
             AI 상담 에이전트 도입 전후를 비교해보세요.
           </p>
         </div>
@@ -32,23 +32,23 @@ export default function BeforeAfter() {
         <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
           {/* Before */}
           <div className="relative">
-            <div className="absolute -top-4 left-6 px-4 py-1 bg-red-500 text-white text-sm font-bold rounded-full">
+            <div className="absolute -top-4 left-6 px-4 py-1 bg-red-500 dark:bg-red-600 text-white text-sm font-bold rounded-full">
               BEFORE
             </div>
-            <div className="bg-red-50 rounded-2xl p-8 border-2 border-red-100 h-full">
-              <h3 className="text-xl font-bold text-red-800 mb-6">기존 방식</h3>
+            <div className="bg-red-50 dark:bg-red-900/30 rounded-2xl p-8 border-2 border-red-100 dark:border-red-800/50 h-full">
+              <h3 className="text-xl font-bold text-red-800 dark:text-red-400 mb-6">기존 방식</h3>
               <ul className="space-y-4">
                 {beforeItems.map((item, index) => (
                   <li key={index} className="flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
-                      <item.icon className="w-4 h-4 text-red-600" />
+                    <div className="w-8 h-8 rounded-full bg-red-100 dark:bg-red-900/50 flex items-center justify-center flex-shrink-0">
+                      <item.icon className="w-4 h-4 text-red-600 dark:text-red-400" />
                     </div>
-                    <span className="text-gray-700 pt-1">{item.text}</span>
+                    <span className="text-gray-700 dark:text-gray-300 pt-1">{item.text}</span>
                   </li>
                 ))}
               </ul>
-              <div className="mt-6 pt-6 border-t border-red-200">
-                <p className="text-red-700 font-medium">
+              <div className="mt-6 pt-6 border-t border-red-200 dark:border-red-800/50">
+                <p className="text-red-700 dark:text-red-400 font-medium">
                   😰 매일 2~3시간 CS에 소비
                 </p>
               </div>
@@ -57,23 +57,23 @@ export default function BeforeAfter() {
 
           {/* After */}
           <div className="relative">
-            <div className="absolute -top-4 left-6 px-4 py-1 bg-green-500 text-white text-sm font-bold rounded-full">
+            <div className="absolute -top-4 left-6 px-4 py-1 bg-green-500 dark:bg-green-600 text-white text-sm font-bold rounded-full">
               AFTER
             </div>
-            <div className="bg-green-50 rounded-2xl p-8 border-2 border-green-100 h-full">
-              <h3 className="text-xl font-bold text-green-800 mb-6">AI 상담사 사용</h3>
+            <div className="bg-green-50 dark:bg-green-900/30 rounded-2xl p-8 border-2 border-green-100 dark:border-green-800/50 h-full">
+              <h3 className="text-xl font-bold text-green-800 dark:text-green-400 mb-6">AI 상담사 사용</h3>
               <ul className="space-y-4">
                 {afterItems.map((item, index) => (
                   <li key={index} className="flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
-                      <item.icon className="w-4 h-4 text-green-600" />
+                    <div className="w-8 h-8 rounded-full bg-green-100 dark:bg-green-900/50 flex items-center justify-center flex-shrink-0">
+                      <item.icon className="w-4 h-4 text-green-600 dark:text-green-400" />
                     </div>
-                    <span className="text-gray-700 pt-1">{item.text}</span>
+                    <span className="text-gray-700 dark:text-gray-300 pt-1">{item.text}</span>
                   </li>
                 ))}
               </ul>
-              <div className="mt-6 pt-6 border-t border-green-200">
-                <p className="text-green-700 font-medium">
+              <div className="mt-6 pt-6 border-t border-green-200 dark:border-green-800/50">
+                <p className="text-green-700 dark:text-green-400 font-medium">
                   😊 CS 시간 70% 이상 절감
                 </p>
               </div>
@@ -84,11 +84,11 @@ export default function BeforeAfter() {
         {/* 화살표 */}
         <div className="hidden md:flex justify-center mt-8">
           <div className="flex items-center gap-4">
-            <div className="h-px w-20 bg-gray-300" />
-            <span className="text-gray-400 font-medium">→</span>
-            <span className="text-blue-600 font-bold">변화의 시작</span>
-            <span className="text-gray-400 font-medium">→</span>
-            <div className="h-px w-20 bg-gray-300" />
+            <div className="h-px w-20 bg-gray-300 dark:bg-gray-700" />
+            <span className="text-gray-400 dark:text-gray-500 font-medium">→</span>
+            <span className="text-blue-600 dark:text-blue-400 font-bold">변화의 시작</span>
+            <span className="text-gray-400 dark:text-gray-500 font-medium">→</span>
+            <div className="h-px w-20 bg-gray-300 dark:bg-gray-700" />
           </div>
         </div>
       </div>

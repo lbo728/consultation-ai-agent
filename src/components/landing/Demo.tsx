@@ -97,20 +97,20 @@ export default function Demo() {
   };
 
   return (
-    <section id="demo" className="py-20 bg-gradient-to-b from-gray-50 to-white">
+    <section id="demo" className="py-20 bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-950">
       <div className="max-w-4xl mx-auto px-4">
         {/* 섹션 헤더 */}
         <div className="text-center mb-12">
-          <span className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-800 rounded-full text-sm font-medium mb-4">
+          <span className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400 rounded-full text-sm font-medium mb-4">
             <Sparkles className="w-4 h-4" />
             계정 없이 바로 체험
           </span>
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
             고객 문의 하나 붙여넣어보면
             <br />
-            <span className="text-blue-600">바로 이해돼.</span>
+            <span className="text-blue-600 dark:text-blue-400">바로 이해돼.</span>
           </h2>
-          <p className="text-gray-600 max-w-xl mx-auto">
+          <p className="text-gray-600 dark:text-gray-400 max-w-xl mx-auto">
             실제 오늘의집 Q&A에서 받은 문의를 붙여넣어보세요.
             <br />
             AI가 브랜드 톤에 맞춘 답변을 3초 안에 생성합니다.
@@ -118,26 +118,26 @@ export default function Demo() {
         </div>
 
         {/* 데모 카드 */}
-        <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+        <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl dark:shadow-blue-500/20 border border-gray-100 dark:border-gray-800 overflow-hidden">
           {/* 헤더 */}
-          <div className="bg-gray-50 px-6 py-4 border-b border-gray-100">
+          <div className="bg-gray-50 dark:bg-gray-800 px-6 py-4 border-b border-gray-100 dark:border-gray-700">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-red-400" />
-                <div className="w-3 h-3 rounded-full bg-yellow-400" />
-                <div className="w-3 h-3 rounded-full bg-green-400" />
-                <span className="ml-3 text-sm text-gray-500 font-medium">
+                <div className="w-3 h-3 rounded-full bg-red-400 dark:bg-red-500" />
+                <div className="w-3 h-3 rounded-full bg-yellow-400 dark:bg-yellow-500" />
+                <div className="w-3 h-3 rounded-full bg-green-400 dark:bg-green-500" />
+                <span className="ml-3 text-sm text-gray-500 dark:text-gray-400 font-medium">
                   AI 상담 에이전트 - 데모
                 </span>
               </div>
-              <span className="text-xs text-gray-400">데코지오 브랜드</span>
+              <span className="text-xs text-gray-400 dark:text-gray-500">데코지오 브랜드</span>
             </div>
           </div>
 
           <div className="p-6 md:p-8">
             {/* 문의 입력 */}
             <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 고객 문의 입력
               </label>
               <div className="relative">
@@ -148,12 +148,12 @@ export default function Demo() {
                   placeholder="오늘의집 Q&A에서 복사한 문의 내용을 붙여넣으세요...
 
 예시: 가로 215cm, 세로 240cm인데 몇 장 주문해야 하나요? 이음선 생기나요?"
-                  className="w-full h-32 px-4 py-3 border border-gray-200 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder:text-gray-400"
+                  className="w-full h-32 px-4 py-3 border border-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-white rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent placeholder:text-gray-400 dark:placeholder:text-gray-500"
                 />
                 <button
                   onClick={handleSubmit}
                   disabled={!question.trim() || isLoading}
-                  className="absolute bottom-3 right-3 p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+                  className="absolute bottom-3 right-3 p-2 bg-blue-600 dark:bg-blue-500 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 disabled:bg-gray-300 dark:disabled:bg-gray-700 disabled:cursor-not-allowed transition-colors"
                 >
                   {isLoading ? (
                     <Loader2 className="w-5 h-5 animate-spin" />
@@ -166,21 +166,21 @@ export default function Demo() {
 
             {/* 로딩 상태 */}
             {isLoading && (
-              <div className="mb-6 p-6 bg-blue-50 rounded-xl border border-blue-100">
+              <div className="mb-6 p-6 bg-blue-50 dark:bg-blue-900/30 rounded-xl border border-blue-100 dark:border-blue-800/50">
                 <div className="flex items-center gap-3">
-                  <Loader2 className="w-5 h-5 text-blue-600 animate-spin" />
-                  <span className="text-blue-800 font-medium">
+                  <Loader2 className="w-5 h-5 text-blue-600 dark:text-blue-400 animate-spin" />
+                  <span className="text-blue-800 dark:text-blue-400 font-medium">
                     AI가 브랜드 톤에 맞춰 답변을 생성하고 있어요...
                   </span>
                 </div>
                 <div className="mt-3 flex gap-2">
-                  <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">
+                  <span className="px-2 py-1 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-400 rounded text-xs">
                     규칙 엔진 계산 중
                   </span>
-                  <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">
+                  <span className="px-2 py-1 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-400 rounded text-xs">
                     정책 문서 검색 중
                   </span>
-                  <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">
+                  <span className="px-2 py-1 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-400 rounded text-xs">
                     답변 생성 중
                   </span>
                 </div>
@@ -191,17 +191,17 @@ export default function Demo() {
             {answer && !isLoading && (
               <div className="mb-6">
                 <div className="flex items-center justify-between mb-2">
-                  <label className="text-sm font-medium text-gray-700">
+                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
                     AI 생성 답변
                   </label>
                   <button
                     onClick={handleCopy}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors"
                   >
                     {isCopied ? (
                       <>
-                        <Check className="w-4 h-4 text-green-600" />
-                        <span className="text-green-600">복사됨!</span>
+                        <Check className="w-4 h-4 text-green-600 dark:text-green-400" />
+                        <span className="text-green-600 dark:text-green-400">복사됨!</span>
                       </>
                     ) : (
                       <>
@@ -211,8 +211,8 @@ export default function Demo() {
                     )}
                   </button>
                 </div>
-                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-5 border border-blue-100">
-                  <p className="text-gray-800 whitespace-pre-wrap leading-relaxed">
+                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30 rounded-xl p-5 border border-blue-100 dark:border-blue-800/50">
+                  <p className="text-gray-800 dark:text-gray-200 whitespace-pre-wrap leading-relaxed">
                     {answer}
                   </p>
                 </div>
@@ -220,14 +220,14 @@ export default function Demo() {
             )}
 
             {/* 부가 정보 */}
-            <div className="flex flex-wrap gap-3 justify-center pt-4 border-t border-gray-100">
-              <span className="inline-flex items-center px-3 py-1.5 bg-green-100 text-green-800 rounded-full text-xs font-medium">
+            <div className="flex flex-wrap gap-3 justify-center pt-4 border-t border-gray-100 dark:border-gray-800">
+              <span className="inline-flex items-center px-3 py-1.5 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400 rounded-full text-xs font-medium">
                 ✓ 브랜드 톤 자동 적용됨
               </span>
-              <span className="inline-flex items-center px-3 py-1.5 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
+              <span className="inline-flex items-center px-3 py-1.5 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400 rounded-full text-xs font-medium">
                 ✓ 장수 계산 / 이음선 여부 자동 판단
               </span>
-              <span className="inline-flex items-center px-3 py-1.5 bg-purple-100 text-purple-800 rounded-full text-xs font-medium">
+              <span className="inline-flex items-center px-3 py-1.5 bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-400 rounded-full text-xs font-medium">
                 ✓ 레일·박스 깊이 기반 안내 포함
               </span>
             </div>
@@ -236,12 +236,12 @@ export default function Demo() {
 
         {/* 하단 CTA */}
         <div className="mt-8 text-center">
-          <p className="text-gray-500 text-sm mb-4">
+          <p className="text-gray-500 dark:text-gray-400 text-sm mb-4">
             더 정확한 답변을 원하시나요? 브랜드 문서를 업로드하고 맞춤형 AI를 만들어보세요.
           </p>
           <a
             href="#pricing"
-            className="inline-flex items-center justify-center px-6 py-3 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition-colors"
+            className="inline-flex items-center justify-center px-6 py-3 bg-blue-600 dark:bg-blue-500 text-white font-semibold rounded-xl hover:bg-blue-700 dark:hover:bg-blue-600 dark:shadow-blue-500/20 transition-colors"
           >
             7일 무료 체험 시작하기
           </a>
