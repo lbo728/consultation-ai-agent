@@ -167,6 +167,114 @@ export interface Database {
           uploaded_at?: string;
         };
       };
+      brand_tones: {
+        Row: {
+          id: string;
+          user_id: string;
+          name: string;
+          description: string | null;
+          instruction_content: string;
+          is_default: boolean | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          name: string;
+          description?: string | null;
+          instruction_content: string;
+          is_default?: boolean | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          name?: string;
+          description?: string | null;
+          instruction_content?: string;
+          is_default?: boolean | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+      user_email_slack_config: {
+        Row: {
+          user_id: string;
+          slack_webhook_url: string | null;
+          inbound_email_address: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          user_id: string;
+          slack_webhook_url?: string | null;
+          inbound_email_address?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          user_id?: string;
+          slack_webhook_url?: string | null;
+          inbound_email_address?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+      inbound_emails: {
+        Row: {
+          id: string;
+          user_id: string;
+          from_email: string;
+          subject: string | null;
+          raw_text: string | null;
+          raw_html: string | null;
+          extracted_questions: any; // JSONB
+          ai_answers: any; // JSONB
+          received_at: string;
+          processed_at: string | null;
+          slack_notified_at: string | null;
+          processing_status: 'pending' | 'processing' | 'completed' | 'failed';
+          error_message: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          from_email: string;
+          subject?: string | null;
+          raw_text?: string | null;
+          raw_html?: string | null;
+          extracted_questions?: any;
+          ai_answers?: any;
+          received_at?: string;
+          processed_at?: string | null;
+          slack_notified_at?: string | null;
+          processing_status?: 'pending' | 'processing' | 'completed' | 'failed';
+          error_message?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          from_email?: string;
+          subject?: string | null;
+          raw_text?: string | null;
+          raw_html?: string | null;
+          extracted_questions?: any;
+          ai_answers?: any;
+          received_at?: string;
+          processed_at?: string | null;
+          slack_notified_at?: string | null;
+          processing_status?: 'pending' | 'processing' | 'completed' | 'failed';
+          error_message?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
     };
   };
 }

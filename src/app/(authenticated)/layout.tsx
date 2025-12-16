@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { FileText, TestTube, LayoutDashboard, LogOut, Moon, Sun } from 'lucide-react';
+import { FileText, TestTube, LayoutDashboard, LogOut, Moon, Sun, Settings } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
 
 interface User {
@@ -59,6 +59,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const menuItems = [
     { href: '/dashboard', icon: LayoutDashboard, label: '대시보드' },
     { href: '/knowledge', icon: FileText, label: '브랜드 지식' },
+    { href: '/settings', icon: Settings, label: '설정' },
     { href: '/admin-test', icon: TestTube, label: '테스트' },
   ];
 
