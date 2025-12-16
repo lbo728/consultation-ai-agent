@@ -1,10 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getUserSafeData } from '@/lib/auth';
-<<<<<<< HEAD
 import { getServerSupabase } from '@/lib/supabase';
-=======
-import { getServerSupabase } from '@/lib/supabase';
->>>>>>> 8edb6d2 (fix: Implement server-side session management with Supabase SSR)
 
 export async function POST(request: NextRequest) {
   try {
@@ -19,13 +15,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-<<<<<<< HEAD
     // 서버 사이드 Supabase 클라이언트로 로그인
     const supabase = await getServerSupabase();
-=======
-    // 서버 사이드 Supabase 클라이언트로 로그인 (쿠키 자동 설정)
-    const supabase = getServerSupabase();
->>>>>>> 8edb6d2 (fix: Implement server-side session management with Supabase SSR)
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -44,19 +35,16 @@ export async function POST(request: NextRequest) {
         { status: 401 }
       );
     }
-<<<<<<< HEAD
 
     const user = {
       id: data.user.id,
       email: data.user.email!,
       createdAt: new Date(data.user.created_at),
     };
-=======
->>>>>>> 8edb6d2 (fix: Implement server-side session management with Supabase SSR)
 
     return NextResponse.json({
       success: true,
-      user: getUserSafeData(data.user),
+      user: getUserSafeData(user),
     });
   } catch (error) {
     console.error('Login error:', error);

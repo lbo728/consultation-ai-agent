@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 import { supabase, getServerSupabase } from '@/lib/supabase';
-=======
-import { supabase, createServerSupabaseClient } from '@/lib/supabase';
->>>>>>> 8edb6d2 (fix: Implement server-side session management with Supabase SSR)
 import type { User } from '@supabase/supabase-js';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
@@ -67,22 +63,6 @@ export async function getCurrentUser(client?: SupabaseClient): Promise<AuthUser 
   const supabaseClient = client || (typeof window === 'undefined' ? await getServerSupabase() : supabase);
 
   const { data: { user }, error } = await supabaseClient.auth.getUser();
-
-  if (error || !user) {
-    return null;
-  }
-
-  return {
-    id: user.id,
-    email: user.email!,
-    createdAt: new Date(user.created_at),
-  };
-}
-
-// 서버 사이드 API 라우트 전용 - 쿠키 기반 세션 읽기
-export async function getCurrentUserServer(): Promise<AuthUser | null> {
-  const supabase = createServerSupabaseClient();
-  const { data: { user }, error } = await supabase.auth.getUser();
 
   if (error || !user) {
     return null;
