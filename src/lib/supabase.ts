@@ -10,11 +10,42 @@ if (!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
   throw new Error('Missing NEXT_PUBLIC_SUPABASE_ANON_KEY environment variable');
 }
 
-// Supabase 클라이언트 생성
+// Supabase 클라이언트 생성 (클라이언트 사이드용)
 export const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 );
+
+// 서버 사이드 API 라우트용 Supabase 클라이언트 (쿠키 기반 세션)
+export function createServerSupabaseClient() {
+  const cookieStore = cookies();
+
+  return createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get(name: string) {
+          return cookieStore.get(name)?.value;
+        },
+        set(name: string, value: string, options: CookieOptions) {
+          try {
+            cookieStore.set({ name, value, ...options });
+          } catch (error) {
+            // Cookie 설정 실패는 무시 (Server Component에서는 set이 불가능)
+          }
+        },
+        remove(name: string, options: CookieOptions) {
+          try {
+            cookieStore.set({ name, value: '', ...options });
+          } catch (error) {
+            // Cookie 삭제 실패는 무시
+          }
+        },
+      },
+    }
+  );
+}
 
 // 서버 사이드에서 사용할 Supabase 클라이언트 (service role)
 export function getServiceSupabase() {

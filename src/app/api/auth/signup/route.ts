@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getUserSafeData } from '@/lib/auth';
+<<<<<<< HEAD
 import { getServerSupabase } from '@/lib/supabase';
+=======
+import { getServerSupabase } from '@/lib/supabase';
+>>>>>>> 8edb6d2 (fix: Implement server-side session management with Supabase SSR)
 
 export async function POST(request: NextRequest) {
   try {
@@ -32,7 +36,11 @@ export async function POST(request: NextRequest) {
     }
 
     // 서버 사이드 Supabase 클라이언트로 회원가입
+<<<<<<< HEAD
     const supabase = await getServerSupabase();
+=======
+    const supabase = getServerSupabase();
+>>>>>>> 8edb6d2 (fix: Implement server-side session management with Supabase SSR)
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
@@ -48,6 +56,7 @@ export async function POST(request: NextRequest) {
     if (!data.user) {
       return NextResponse.json(
         { error: '사용자 생성에 실패했습니다.' },
+<<<<<<< HEAD
         { status: 500 }
       );
     }
@@ -57,10 +66,15 @@ export async function POST(request: NextRequest) {
       email: data.user.email!,
       createdAt: new Date(data.user.created_at),
     };
+=======
+        { status: 400 }
+      );
+    }
+>>>>>>> 8edb6d2 (fix: Implement server-side session management with Supabase SSR)
 
     return NextResponse.json({
       success: true,
-      user: getUserSafeData(user),
+      user: getUserSafeData(data.user),
     });
   } catch (error) {
     console.error('Signup error:', error);

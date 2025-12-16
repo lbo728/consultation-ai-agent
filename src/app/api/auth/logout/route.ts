@@ -1,9 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
+<<<<<<< HEAD
 import { getServerSupabase } from '@/lib/supabase';
 
 export async function POST(request: NextRequest) {
   try {
     const supabase = await getServerSupabase();
+=======
+import { getServerSupabase } from '@/lib/supabase';
+
+export async function POST(request: NextRequest) {
+  try {
+    const supabase = getServerSupabase();
+>>>>>>> 8edb6d2 (fix: Implement server-side session management with Supabase SSR)
     await supabase.auth.signOut();
 
     return NextResponse.json({ success: true });
