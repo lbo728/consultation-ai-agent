@@ -36,14 +36,14 @@ const features = [
 
 export default function Features() {
   return (
-    <section id="features" className="py-20 bg-white">
+    <section id="features" className="py-20 bg-white dark:bg-gray-950">
       <div className="max-w-6xl mx-auto px-4">
         {/* 섹션 헤더 */}
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
             핵심 기능
           </h2>
-          <p className="text-gray-600 max-w-xl mx-auto">
+          <p className="text-gray-600 dark:text-gray-400 max-w-xl mx-auto">
             AI 상담 에이전트가 제공하는 강력한 기능들
           </p>
         </div>
@@ -53,20 +53,20 @@ export default function Features() {
           {features.map((feature, index) => (
             <div
               key={index}
-              className="bg-white rounded-2xl p-6 border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-300"
+              className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-800 hover:border-blue-200 dark:hover:border-blue-700 hover:shadow-lg dark:hover:shadow-blue-500/20 transition-all duration-300"
             >
-              <div className={`w-12 h-12 rounded-xl ${feature.color} flex items-center justify-center mb-4`}>
+              <div className={`w-12 h-12 rounded-xl ${feature.color} dark:bg-opacity-20 flex items-center justify-center mb-4`}>
                 <feature.icon className="w-6 h-6" />
               </div>
               <div className="flex items-center gap-2 mb-2">
-                <h3 className="text-lg font-bold text-gray-900">{feature.title}</h3>
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white">{feature.title}</h3>
                 {feature.badge && (
-                  <span className="px-2 py-0.5 bg-indigo-100 text-indigo-700 text-xs font-bold rounded">
+                  <span className="px-2 py-0.5 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400 text-xs font-bold rounded">
                     {feature.badge}
                   </span>
                 )}
               </div>
-              <p className="text-gray-600 text-sm leading-relaxed">
+              <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
                 {feature.description}
               </p>
             </div>

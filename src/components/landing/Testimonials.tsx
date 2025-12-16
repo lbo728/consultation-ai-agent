@@ -29,14 +29,14 @@ const testimonials = [
 
 export default function Testimonials() {
   return (
-    <section id="testimonials" className="py-20 bg-gray-50">
+    <section id="testimonials" className="py-20 bg-gray-50 dark:bg-gray-900">
       <div className="max-w-6xl mx-auto px-4">
         {/* 섹션 헤더 */}
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
             먼저 사용해본 분들의 이야기
           </h2>
-          <p className="text-gray-600 max-w-xl mx-auto">
+          <p className="text-gray-600 dark:text-gray-400 max-w-xl mx-auto">
             실제 오늘의집 판매자분들이 경험한 변화입니다.
           </p>
         </div>
@@ -46,12 +46,12 @@ export default function Testimonials() {
           {testimonials.map((testimonial, index) => (
             <div
               key={index}
-              className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow relative"
+              className="bg-white dark:bg-gray-950 rounded-2xl p-8 shadow-lg dark:shadow-blue-500/20 hover:shadow-xl dark:hover:shadow-blue-500/30 transition-shadow relative"
             >
               {/* 인용 아이콘 */}
               <div className="absolute -top-4 left-6">
-                <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
-                  <Quote className="w-5 h-5 text-blue-600" />
+                <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                  <Quote className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                 </div>
               </div>
 
@@ -60,26 +60,26 @@ export default function Testimonials() {
                 {Array.from({ length: testimonial.rating }).map((_, i) => (
                   <Star
                     key={i}
-                    className="w-5 h-5 fill-yellow-400 text-yellow-400"
+                    className="w-5 h-5 fill-yellow-400 dark:fill-yellow-500 text-yellow-400 dark:text-yellow-500"
                   />
                 ))}
               </div>
 
               {/* 후기 내용 */}
-              <p className="text-gray-700 mb-6 leading-relaxed">
+              <p className="text-gray-700 dark:text-gray-300 mb-6 leading-relaxed">
                 &ldquo;{testimonial.quote}&rdquo;
               </p>
 
               {/* 작성자 정보 */}
-              <div className="flex items-center gap-4 pt-4 border-t border-gray-100">
+              <div className="flex items-center gap-4 pt-4 border-t border-gray-100 dark:border-gray-800">
                 <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-lg">
                   {testimonial.avatar}
                 </div>
                 <div>
-                  <div className="font-semibold text-gray-900">
+                  <div className="font-semibold text-gray-900 dark:text-white">
                     {testimonial.author}
                   </div>
-                  <div className="text-sm text-gray-500">
+                  <div className="text-sm text-gray-500 dark:text-gray-400">
                     {testimonial.company} · {testimonial.role}
                   </div>
                 </div>
@@ -90,17 +90,17 @@ export default function Testimonials() {
 
         {/* 신뢰 배지 */}
         <div className="mt-12 flex flex-wrap justify-center gap-4">
-          <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-sm border border-gray-100">
-            <span className="text-green-600 font-bold">98%</span>
-            <span className="text-gray-600 text-sm">고객 만족도</span>
+          <div className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-950 rounded-full shadow-sm border border-gray-100 dark:border-gray-800">
+            <span className="text-green-600 dark:text-green-400 font-bold">98%</span>
+            <span className="text-gray-600 dark:text-gray-400 text-sm">고객 만족도</span>
           </div>
-          <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-sm border border-gray-100">
-            <span className="text-blue-600 font-bold">50+</span>
-            <span className="text-gray-600 text-sm">베타 테스터</span>
+          <div className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-950 rounded-full shadow-sm border border-gray-100 dark:border-gray-800">
+            <span className="text-blue-600 dark:text-blue-400 font-bold">50+</span>
+            <span className="text-gray-600 dark:text-gray-400 text-sm">베타 테스터</span>
           </div>
-          <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-sm border border-gray-100">
-            <span className="text-purple-600 font-bold">10,000+</span>
-            <span className="text-gray-600 text-sm">생성된 답변</span>
+          <div className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-950 rounded-full shadow-sm border border-gray-100 dark:border-gray-800">
+            <span className="text-purple-600 dark:text-purple-400 font-bold">10,000+</span>
+            <span className="text-gray-600 dark:text-gray-400 text-sm">생성된 답변</span>
           </div>
         </div>
       </div>

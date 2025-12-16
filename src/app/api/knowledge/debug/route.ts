@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenAI } from "@google/genai";
-import { getSession } from "@/lib/session";
+import { getCurrentUser } from "@/lib/auth";
 import { getUserFileSearchStore } from "@/lib/knowledge";
 
 const ai = new GoogleGenAI({
@@ -10,27 +10,14 @@ const ai = new GoogleGenAI({
 export async function GET(request: NextRequest) {
   try {
     // 인증 확인
-    const sessionId = request.cookies.get("sessionId")?.value;
-    console.log("Debug API - Session ID:", sessionId);
+    const user = await getCurrentUser();
+    console.log("Debug API - User:", user);
 
-    if (!sessionId) {
+    if (!user) {
       return NextResponse.json(
         {
           error: "로그인이 필요합니다.",
-          debug: "sessionId cookie not found",
-        },
-        { status: 401 }
-      );
-    }
-
-    const session = getSession(sessionId);
-    console.log("Debug API - Session:", session);
-
-    if (!session) {
-      return NextResponse.json(
-        {
-          error: "세션이 만료되었습니다.",
-          debug: "session not found or expired",
+          debug: "user not authenticated",
         },
         { status: 401 }
       );
@@ -41,7 +28,7 @@ export async function GET(request: NextRequest) {
     }
 
     // 사용자의 File Search Store 가져오기
-    const userStore = getUserFileSearchStore(session.userId);
+    const userStore = await getUserFileSearchStore(user.id);
     if (!userStore) {
       return NextResponse.json(
         {

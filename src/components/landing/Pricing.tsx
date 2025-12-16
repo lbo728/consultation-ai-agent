@@ -39,18 +39,18 @@ const plans = [
 
 export default function Pricing() {
   return (
-    <section id="pricing" className="py-20 bg-gradient-to-b from-white to-gray-50">
+    <section id="pricing" className="py-20 bg-gradient-to-b from-white to-gray-50 dark:from-gray-950 dark:to-gray-900">
       <div className="max-w-5xl mx-auto px-4">
         {/* 섹션 헤더 */}
         <div className="text-center mb-16">
-          <span className="inline-flex items-center gap-2 px-4 py-2 bg-green-100 text-green-800 rounded-full text-sm font-medium mb-4">
+          <span className="inline-flex items-center gap-2 px-4 py-2 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400 rounded-full text-sm font-medium mb-4">
             <Star className="w-4 h-4" />
             7일 무료 체험
           </span>
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
             심플한 가격, 확실한 가치
           </h2>
-          <p className="text-gray-600 max-w-xl mx-auto">
+          <p className="text-gray-600 dark:text-gray-400 max-w-xl mx-auto">
             부담 없이 시작하고, 효과를 확인한 뒤 결정하세요.
             <br />
             모든 플랜에 7일 무료 체험이 포함됩니다.
@@ -62,16 +62,16 @@ export default function Pricing() {
           {plans.map((plan) => (
             <div
               key={plan.name}
-              className={`relative bg-white rounded-2xl p-8 ${
+              className={`relative bg-white dark:bg-gray-900 rounded-2xl p-8 ${
                 plan.highlighted
-                  ? "border-2 border-blue-600 shadow-xl shadow-blue-600/10"
-                  : "border border-gray-200 shadow-lg"
+                  ? "border-2 border-blue-600 dark:border-blue-500 shadow-xl shadow-blue-600/10 dark:shadow-blue-500/20"
+                  : "border border-gray-200 dark:border-gray-800 shadow-lg dark:shadow-blue-500/10"
               }`}
             >
               {/* 인기 배지 */}
               {plan.badge && (
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                  <span className="px-4 py-1 bg-blue-600 text-white text-sm font-bold rounded-full">
+                  <span className="px-4 py-1 bg-blue-600 dark:bg-blue-500 text-white text-sm font-bold rounded-full">
                     {plan.badge}
                   </span>
                 </div>
@@ -79,15 +79,15 @@ export default function Pricing() {
 
               {/* 플랜 정보 */}
               <div className="text-center mb-8">
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
                   {plan.name}
                 </h3>
-                <p className="text-gray-500 text-sm mb-4">{plan.description}</p>
+                <p className="text-gray-500 dark:text-gray-400 text-sm mb-4">{plan.description}</p>
                 <div className="flex items-baseline justify-center gap-1">
-                  <span className="text-4xl font-bold text-gray-900">
+                  <span className="text-4xl font-bold text-gray-900 dark:text-white">
                     ₩{plan.price}
                   </span>
-                  <span className="text-gray-500">/월</span>
+                  <span className="text-gray-500 dark:text-gray-400">/월</span>
                 </div>
               </div>
 
@@ -95,10 +95,10 @@ export default function Pricing() {
               <ul className="space-y-4 mb-8">
                 {plan.features.map((feature, index) => (
                   <li key={index} className="flex items-start gap-3">
-                    <div className="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <Check className="w-3 h-3 text-green-600" />
+                    <div className="w-5 h-5 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <Check className="w-3 h-3 text-green-600 dark:text-green-400" />
                     </div>
-                    <span className="text-gray-700">{feature}</span>
+                    <span className="text-gray-700 dark:text-gray-300">{feature}</span>
                   </li>
                 ))}
               </ul>
@@ -106,13 +106,17 @@ export default function Pricing() {
               {/* CTA 버튼 */}
               <a
                 href="/signup"
-                className={`block w-full py-4 text-center font-semibold rounded-xl transition-colors ${plan.ctaStyle}`}
+                className={`block w-full py-4 text-center font-semibold rounded-xl transition-colors ${
+                  plan.highlighted
+                    ? "bg-blue-600 dark:bg-blue-500 text-white hover:bg-blue-700 dark:hover:bg-blue-600"
+                    : "border-2 border-blue-600 dark:border-blue-500 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30"
+                }`}
               >
                 {plan.cta}
               </a>
 
               {/* 무료 체험 안내 */}
-              <p className="text-center text-sm text-gray-500 mt-4">
+              <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-4">
                 7일 무료 체험 포함
               </p>
             </div>
@@ -121,9 +125,9 @@ export default function Pricing() {
 
         {/* 추가 안내 */}
         <div className="mt-12 text-center">
-          <p className="text-gray-500 text-sm">
+          <p className="text-gray-500 dark:text-gray-400 text-sm">
             대량 문의 처리가 필요하신가요?{" "}
-            <a href="#" className="text-blue-600 font-medium hover:underline">
+            <a href="#" className="text-blue-600 dark:text-blue-400 font-medium hover:underline">
               Enterprise 플랜 문의하기
             </a>
           </p>

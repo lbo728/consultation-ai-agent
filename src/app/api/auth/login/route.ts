@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { signIn, getUserSafeData } from '@/lib/auth';
+import { getUserSafeData } from '@/lib/auth';
+import { getServerSupabase } from '@/lib/supabase';
 
 export async function POST(request: NextRequest) {
   try {
@@ -14,8 +15,32 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Supabase Auth로 로그인
-    const user = await signIn(email, password);
+    // 서버 사이드 Supabase 클라이언트로 로그인
+    const supabase = await getServerSupabase();
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      return NextResponse.json(
+        { error: error.message },
+        { status: 401 }
+      );
+    }
+
+    if (!data.user) {
+      return NextResponse.json(
+        { error: '로그인에 실패했습니다.' },
+        { status: 401 }
+      );
+    }
+
+    const user = {
+      id: data.user.id,
+      email: data.user.email!,
+      createdAt: new Date(data.user.created_at),
+    };
 
     return NextResponse.json({
       success: true,

@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { signOut } from '@/lib/auth';
+import { getServerSupabase } from '@/lib/supabase';
 
 export async function POST(request: NextRequest) {
   try {
-    await signOut();
+    const supabase = await getServerSupabase();
+    await supabase.auth.signOut();
 
     return NextResponse.json({ success: true });
   } catch (error) {

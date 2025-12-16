@@ -44,18 +44,18 @@ export default function FAQ() {
   };
 
   return (
-    <section id="faq" className="py-20 bg-white">
+    <section id="faq" className="py-20 bg-white dark:bg-gray-950">
       <div className="max-w-3xl mx-auto px-4">
         {/* 섹션 헤더 */}
         <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-800 rounded-full text-sm font-medium mb-4">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400 rounded-full text-sm font-medium mb-4">
             <HelpCircle className="w-4 h-4" />
             자주 묻는 질문
           </div>
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
             궁금한 점이 있으신가요?
           </h2>
-          <p className="text-gray-600">
+          <p className="text-gray-600 dark:text-gray-400">
             자주 묻는 질문들을 모았습니다. 더 궁금한 점은 언제든 문의해주세요.
           </p>
         </div>
@@ -65,17 +65,17 @@ export default function FAQ() {
           {faqs.map((faq, index) => (
             <div
               key={index}
-              className="bg-gray-50 rounded-2xl overflow-hidden border border-gray-100"
+              className="bg-gray-50 dark:bg-gray-900 rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-800"
             >
               <button
                 onClick={() => toggleFaq(index)}
-                className="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-gray-100 transition-colors"
+                className="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
               >
-                <span className="font-semibold text-gray-900 pr-4">
+                <span className="font-semibold text-gray-900 dark:text-white pr-4">
                   {faq.question}
                 </span>
                 <ChevronDown
-                  className={`w-5 h-5 text-gray-500 flex-shrink-0 transition-transform duration-300 ${
+                  className={`w-5 h-5 text-gray-500 dark:text-gray-400 flex-shrink-0 transition-transform duration-300 ${
                     openIndex === index ? "rotate-180" : ""
                   }`}
                 />
@@ -86,7 +86,7 @@ export default function FAQ() {
                 }`}
               >
                 <div className="px-6 pb-5">
-                  <p className="text-gray-600 leading-relaxed">{faq.answer}</p>
+                  <p className="text-gray-600 dark:text-gray-400 leading-relaxed">{faq.answer}</p>
                 </div>
               </div>
             </div>
@@ -95,12 +95,12 @@ export default function FAQ() {
 
         {/* 추가 문의 안내 */}
         <div className="mt-12 text-center">
-          <p className="text-gray-600 mb-4">
+          <p className="text-gray-600 dark:text-gray-400 mb-4">
             원하는 답변을 찾지 못하셨나요?
           </p>
           <a
             href="mailto:support@example.com"
-            className="inline-flex items-center justify-center px-6 py-3 bg-gray-900 text-white font-semibold rounded-xl hover:bg-gray-800 transition-colors"
+            className="inline-flex items-center justify-center px-6 py-3 bg-gray-900 dark:bg-blue-600 text-white font-semibold rounded-xl hover:bg-gray-800 dark:hover:bg-blue-700 dark:shadow-blue-500/20 transition-colors"
           >
             직접 문의하기
           </a>

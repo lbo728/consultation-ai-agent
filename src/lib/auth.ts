@@ -1,5 +1,6 @@
-import { supabase } from '@/lib/supabase';
+import { supabase, getServerSupabase } from '@/lib/supabase';
 import type { User } from '@supabase/supabase-js';
+import type { SupabaseClient } from '@supabase/supabase-js';
 
 export interface AuthUser {
   id: string;
@@ -57,8 +58,11 @@ export async function signOut(): Promise<void> {
   }
 }
 
-export async function getCurrentUser(): Promise<AuthUser | null> {
-  const { data: { user }, error } = await supabase.auth.getUser();
+export async function getCurrentUser(client?: SupabaseClient): Promise<AuthUser | null> {
+  // API Route에서 호출되는 경우 서버 사이드 클라이언트 사용
+  const supabaseClient = client || (typeof window === 'undefined' ? await getServerSupabase() : supabase);
+
+  const { data: { user }, error } = await supabaseClient.auth.getUser();
 
   if (error || !user) {
     return null;
